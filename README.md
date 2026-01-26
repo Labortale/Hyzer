@@ -73,6 +73,8 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | Duplicate Block Components | Critical | Player kicked when using teleporters |
 | Null npcReferences (Removal) | Critical | World crashes when spawn markers are removed |
 | Null npcReferences (Constructor) | Critical | ROOT CAUSE: SpawnMarkerEntity never initializes array |
+| SetMemoriesCapacity Interaction | Critical | Interaction tick crashes when PlayerMemories component is unavailable |
+| World.execute Shutdown Guard | Medium | Task submissions during world shutdown throw exceptions/spam logs |
 | BlockCounter Not Decrementing | Medium | Teleporter limit stuck at 5, can't place new ones |
 | WorldMapTracker Iterator Crash | Critical | Server crashes every ~30 min on high-pop servers |
 | ArchetypeChunk Stale Entity | Critical | IndexOutOfBoundsException when NPC systems access removed entities |
@@ -175,24 +177,24 @@ Look for these log messages at startup:
 
 ### Early Plugin Loaded
 
-Look for these log messages at startup (15 transformers):
+Look for these log messages at startup (17 transformers):
 ```
 [HyzenKernel-Early] InteractionChain transformation COMPLETE!
-[HyzenKernel-Early] World transformation COMPLETE!
-[HyzenKernel-Early] Universe transformation COMPLETE!
-[HyzenKernel-Early] TickingThread transformation COMPLETE!
-[HyzenKernel-Early] SpawnReferenceSystems transformation COMPLETE!
-[HyzenKernel-Early] BeaconSpawnController transformation COMPLETE!
-[HyzenKernel-Early] BlockComponentChunk transformation COMPLETE!
-[HyzenKernel-Early] MarkerAddRemoveSystem transformation COMPLETE!
-[HyzenKernel-Early] SpawnMarkerEntity transformation COMPLETE!
-[HyzenKernel-Early] SpawnMarkerSystems transformation COMPLETE!
-[HyzenKernel-Early] TrackedPlacement transformation COMPLETE!
-[HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
 [HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
-[HyzenKernel-Early] PacketHandler transformation COMPLETE!
-[HyzenKernel-Early] Successfully transformed UUIDSystem.onEntityRemove()
+[HyzenKernel-Early] BlockComponentChunk transformation COMPLETE!
 [HyzenKernel-Early] CommandBuffer transformation COMPLETE!
+[HyzenKernel-Early] InteractionManager transformation COMPLETE!
+[HyzenKernel-Early] PacketHandler transformation COMPLETE!
+[HyzenKernel-Early] SetMemoriesCapacityInteraction transformation COMPLETE!
+[HyzenKernel-Early] SpawnMarkerSystems transformation COMPLETE!
+[HyzenKernel-Early] SpawnReferenceSystems transformation COMPLETE!
+[HyzenKernel-Early] TickingThread transformation COMPLETE!
+[HyzenKernel-Early] Universe transformation COMPLETE!
+[HyzenKernel-Early] World transformation COMPLETE!
+[HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
+[HyzenKernel-Early] WorldSpawningSystem transformation COMPLETE!
+[HyzenKernel-Early] LivingEntity transformation COMPLETE!
+[HyzenKernel-Early] Successfully transformed UUIDSystem.onEntityRemove()
 ```
 
 ---

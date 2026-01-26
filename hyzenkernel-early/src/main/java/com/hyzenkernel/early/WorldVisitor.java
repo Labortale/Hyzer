@@ -17,6 +17,8 @@ public class WorldVisitor extends ClassVisitor {
     // Method we're targeting - the 4-parameter version that does the actual work
     private static final String ADD_PLAYER_METHOD = "addPlayer";
     private static final String ADD_PLAYER_DESC = "(Lcom/hypixel/hytale/server/core/universe/PlayerRef;Lcom/hypixel/hytale/math/vector/Transform;Ljava/lang/Boolean;Ljava/lang/Boolean;)Ljava/util/concurrent/CompletableFuture;";
+    private static final String EXECUTE_METHOD = "execute";
+    private static final String EXECUTE_DESC = "(Ljava/lang/Runnable;)V";
 
     public WorldVisitor(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
@@ -37,6 +39,12 @@ public class WorldVisitor extends ClassVisitor {
             verbose("Found method: " + name + descriptor);
             verbose("Applying instance teleport race condition fix...");
             return new WorldAddPlayerMethodVisitor(mv, className);
+        }
+
+        if (name.equals(EXECUTE_METHOD) && descriptor.equals(EXECUTE_DESC)) {
+            verbose("Found method: " + name + descriptor);
+            verbose("Applying World.execute shutdown guard...");
+            return new WorldExecuteMethodVisitor(mv, className);
         }
 
         return mv;

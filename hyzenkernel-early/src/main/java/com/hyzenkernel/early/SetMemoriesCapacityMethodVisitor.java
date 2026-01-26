@@ -15,8 +15,8 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  *
  * This fix injects code at the start of firstRun() that:
  * 1. Gets the PlayerMemories ComponentType
- * 2. Checks if it's valid using isValid()
- * 3. If invalid, sets state to Failed and returns early
+ * 2. Calls validate() inside a try-catch
+ * 3. If validate() throws, sets state to Failed and returns early
  * 4. If valid, continues with the original code
  *
  * Original firstRun() starts with:
@@ -26,8 +26,9 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  *
  * Transformed to:
  *   // Check if PlayerMemories ComponentType is valid
- *   ComponentType memoriesType = PlayerMemories.getComponentType();
- *   if (!memoriesType.isValid()) {
+ *   try {
+ *       PlayerMemories.getComponentType().validate();
+ *   } catch (IllegalStateException e) {
  *       context.getState().state = InteractionState.Failed;
  *       return;
  *   }
@@ -59,8 +60,14 @@ public class SetMemoriesCapacityMethodVisitor extends MethodVisitor {
 
         Label continueLabel = new Label();
 
-        // Step 1: Get the ComponentType
-        // ComponentType memoriesType = PlayerMemories.getComponentType();
+        Label tryStart = new Label();
+        Label tryEnd = new Label();
+        Label catchHandler = new Label();
+
+        // try { PlayerMemories.getComponentType().validate(); }
+        mv.visitTryCatchBlock(tryStart, tryEnd, catchHandler, "java/lang/IllegalStateException");
+
+        mv.visitLabel(tryStart);
         mv.visitMethodInsn(
             Opcodes.INVOKESTATIC,
             PLAYER_MEMORIES,
@@ -68,19 +75,19 @@ public class SetMemoriesCapacityMethodVisitor extends MethodVisitor {
             "()Lcom/hypixel/hytale/component/ComponentType;",
             false
         );
-
-        // Step 2: Check if it's valid
-        // if (memoriesType.isValid()) goto continueLabel
         mv.visitMethodInsn(
             Opcodes.INVOKEVIRTUAL,
             COMPONENT_TYPE,
-            "isValid",
-            "()Z",
+            "validate",
+            "()V",
             false
         );
-        mv.visitJumpInsn(Opcodes.IFNE, continueLabel);  // if true (valid), skip to continue
+        mv.visitLabel(tryEnd);
+        mv.visitJumpInsn(Opcodes.GOTO, continueLabel);
 
-        // Step 3: ComponentType is invalid - set state to Failed and return
+        // catch (IllegalStateException e) { state = Failed; return; }
+        mv.visitLabel(catchHandler);
+        mv.visitInsn(Opcodes.POP);
         // context.getState().state = InteractionState.Failed;
         mv.visitVarInsn(Opcodes.ALOAD, 2);  // Load context (parameter 2)
         mv.visitMethodInsn(
