@@ -12,8 +12,8 @@ HyzenKernel consists of **two complementary plugins** that work together to fix 
 
 | Plugin | File | Purpose |
 |--------|------|---------|
-| **Runtime Plugin** | `hyzenkernel.jar` | Fixes bugs at runtime using sanitizers and event hooks |
-| **Early Plugin** | `hyzenkernel-early.jar` | Fixes deep core bugs via bytecode transformation at class load |
+| **Runtime Plugin** | `hyzenkernel-X.X.X.jar` | Fixes bugs at runtime using sanitizers and event hooks |
+| **Early Plugin** | `hyzenkernel-early-X.X.X.jar` | Fixes deep core bugs via bytecode transformation at class load |
 
 ### Why Two Plugins?
 
@@ -25,23 +25,17 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 
 ### Runtime Plugin (Required)
 
-1. Download `hyzenkernel.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
+1. Download `hyzenkernel-X.X.X.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
 2. Place in your server's `mods/` directory
 3. Restart the server
 
 ### Early Plugin (Recommended)
 
-1. Download `hyzenkernel-early.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
+1. Download `hyzenkernel-early-X.X.X.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
 2. Place in your server's `earlyplugins/` directory
 3. Start the server with early plugins enabled:
    - Set `ACCEPT_EARLY_PLUGINS=1` environment variable, OR
    - Press Enter when prompted at startup
-
-### Alternative Downloads
-
-**ModTale:**
-- [HyzenKernel Runtime](https://modtale.net/project/YOUR_RUNTIME_UUID) *(update link after project creation)*
-- [HyzenKernel Early](https://modtale.net/project/YOUR_EARLY_UUID) *(update link after project creation)*
 
 ---
 
@@ -222,7 +216,7 @@ Look for these log messages at startup (17 transformers):
 
 ## Building from Source
 
-Requires Java 21 and access to `HytaleServer.jar`.
+Requires Java 25 and access to `HytaleServer.jar`.
 
 ```bash
 # Clone the repo
@@ -263,8 +257,4 @@ This project is provided as-is for the Hytale community. Use at your own risk.
 
 Found another Hytale bug that needs patching? We'd love your help!
 
-1. Open an [issue](https://github.com/John-Willikers/hyfixes/issues) describing the bug
-2. Fork the repo and create a fix
-3. Submit a PR with your changes
-
-Join our [Discord](https://discord.gg/6g7McTd27z) to discuss ideas!
+- Open an issue or pull request.
