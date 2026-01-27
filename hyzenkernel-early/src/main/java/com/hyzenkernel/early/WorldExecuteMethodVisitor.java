@@ -6,9 +6,8 @@ import org.objectweb.asm.Opcodes;
 
 /**
  * ASM MethodVisitor that replaces World.execute(Runnable) to avoid throwing
- * when the world is already shut down. If acceptingTasks is false and alive
- * is false, the task is dropped silently; otherwise we preserve the original
- * IllegalThreadStateException behavior.
+ * when the world stops accepting tasks. If acceptingTasks is false, the task
+ * is dropped silently to prevent async spam during shutdown windows.
  */
 public class WorldExecuteMethodVisitor extends MethodVisitor {
 
@@ -28,58 +27,15 @@ public class WorldExecuteMethodVisitor extends MethodVisitor {
 
     private void generateFixedMethod() {
         Label acceptTasks = new Label();
-        Label throwException = new Label();
 
         target.visitCode();
 
-        // if (!this.acceptingTasks.get()) { ... }
+        // if (!this.acceptingTasks.get()) return;
         target.visitVarInsn(Opcodes.ALOAD, 0);
         target.visitFieldInsn(Opcodes.GETFIELD, className, "acceptingTasks", "Ljava/util/concurrent/atomic/AtomicBoolean;");
         target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/concurrent/atomic/AtomicBoolean", "get", "()Z", false);
         target.visitJumpInsn(Opcodes.IFNE, acceptTasks);
-
-        // if (!this.alive.get()) return;
-        target.visitVarInsn(Opcodes.ALOAD, 0);
-        target.visitFieldInsn(Opcodes.GETFIELD, className, "alive", "Ljava/util/concurrent/atomic/AtomicBoolean;");
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/concurrent/atomic/AtomicBoolean", "get", "()Z", false);
-        target.visitJumpInsn(Opcodes.IFNE, throwException);
         target.visitInsn(Opcodes.RETURN);
-
-        // throw new SkipSentryException(new IllegalThreadStateException("World thread is not accepting tasks: " + name + ", " + getThread()))
-        target.visitLabel(throwException);
-        target.visitTypeInsn(Opcodes.NEW, "com/hypixel/hytale/logger/sentry/SkipSentryException");
-        target.visitInsn(Opcodes.DUP);
-        target.visitTypeInsn(Opcodes.NEW, "java/lang/IllegalThreadStateException");
-        target.visitInsn(Opcodes.DUP);
-        target.visitTypeInsn(Opcodes.NEW, "java/lang/StringBuilder");
-        target.visitInsn(Opcodes.DUP);
-        target.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
-        target.visitLdcInsn("World thread is not accepting tasks: ");
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
-        target.visitVarInsn(Opcodes.ALOAD, 0);
-        target.visitFieldInsn(Opcodes.GETFIELD, className, "name", "Ljava/lang/String;");
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
-        target.visitLdcInsn(", ");
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
-        target.visitVarInsn(Opcodes.ALOAD, 0);
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, "getThread", "()Ljava/lang/Thread;", false);
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;", false);
-        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
-        target.visitMethodInsn(
-            Opcodes.INVOKESPECIAL,
-            "java/lang/IllegalThreadStateException",
-            "<init>",
-            "(Ljava/lang/String;)V",
-            false
-        );
-        target.visitMethodInsn(
-            Opcodes.INVOKESPECIAL,
-            "com/hypixel/hytale/logger/sentry/SkipSentryException",
-            "<init>",
-            "(Ljava/lang/Throwable;)V",
-            false
-        );
-        target.visitInsn(Opcodes.ATHROW);
 
         // this.taskQueue.offer(command);
         target.visitLabel(acceptTasks);

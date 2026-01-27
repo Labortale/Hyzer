@@ -69,6 +69,7 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | Null npcReferences (Constructor) | Critical | ROOT CAUSE: SpawnMarkerEntity never initializes array |
 | SetMemoriesCapacity Interaction | Critical | Interaction tick crashes when PlayerMemories component is unavailable |
 | World.execute Shutdown Guard | Medium | Task submissions during world shutdown throw exceptions/spam logs |
+| Prefab Missing Asset Guard | Medium | Prevents exceptions/spam when a prefab file is missing |
 | BlockCounter Not Decrementing | Medium | Teleporter limit stuck at 5, can't place new ones |
 | WorldMapTracker Iterator Crash | Critical | Server crashes every ~30 min on high-pop servers |
 | ArchetypeChunk Stale Entity | Critical | IndexOutOfBoundsException when NPC systems access removed entities |
@@ -171,7 +172,7 @@ Look for these log messages at startup:
 
 ### Early Plugin Loaded
 
-Look for these log messages at startup (17 transformers):
+Look for these log messages at startup (18 transformers):
 ```
 [HyzenKernel-Early] InteractionChain transformation COMPLETE!
 [HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
@@ -179,6 +180,7 @@ Look for these log messages at startup (17 transformers):
 [HyzenKernel-Early] CommandBuffer transformation COMPLETE!
 [HyzenKernel-Early] InteractionManager transformation COMPLETE!
 [HyzenKernel-Early] PacketHandler transformation COMPLETE!
+[HyzenKernel-Early] PrefabLoader transformation COMPLETE!
 [HyzenKernel-Early] SetMemoriesCapacityInteraction transformation COMPLETE!
 [HyzenKernel-Early] SpawnMarkerSystems transformation COMPLETE!
 [HyzenKernel-Early] SpawnReferenceSystems transformation COMPLETE!

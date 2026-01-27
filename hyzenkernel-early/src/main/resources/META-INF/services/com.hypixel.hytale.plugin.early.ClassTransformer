@@ -15,3 +15,4 @@ com.hyzenkernel.early.UniverseTransformer
 com.hyzenkernel.early.LivingEntityTransformer
 com.hyzenkernel.early.SetMemoriesCapacityTransformer
 com.hyzenkernel.early.WorldSpawningSystemTransformer
+com.hyzenkernel.early.PrefabLoaderTransformer
