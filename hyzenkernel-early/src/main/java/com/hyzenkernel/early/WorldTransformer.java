@@ -32,7 +32,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  *
  * This properly handles the race condition while still catching genuine errors.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/7">GitHub Issue #7</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/7">GitHub Issue #7</a>
  */
 public class WorldTransformer implements ClassTransformer {
 

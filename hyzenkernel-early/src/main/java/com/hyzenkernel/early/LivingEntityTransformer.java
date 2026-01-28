@@ -22,7 +22,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * Wrap LivingEntity.setInventory() to validate inventory ownership before assignment.
  * If an inventory is already owned by a different player, force deep-clone it.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/45">Issue #45</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/45">Issue #45</a>
  */
 public class LivingEntityTransformer implements ClassTransformer {
 

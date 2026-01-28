@@ -30,7 +30,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * Add bounds checking at the start of getComponent() to return null gracefully
  * when the index is out of bounds, instead of throwing IndexOutOfBoundsException.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/20">GitHub Issue #20</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/20">GitHub Issue #20</a>
  */
 public class ArchetypeChunkTransformer implements ClassTransformer {
 

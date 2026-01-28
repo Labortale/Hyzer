@@ -29,7 +29,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * If the exception occurs, log a warning and continue - the world map will
  * recover on the next tick without crashing the WorldMap thread.
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/16
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/16
  */
 public class WorldMapTrackerTransformer implements ClassTransformer {
 

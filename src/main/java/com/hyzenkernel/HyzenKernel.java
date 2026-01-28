@@ -159,7 +159,7 @@ public class HyzenKernel extends JavaPlugin {
         }
 
         // Fix 9: InteractionManager NPE crash when opening crafttables (v1.3.1)
-        // GitHub Issue: https://github.com/HyzenNet/Kernel/issues/1
+        // GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/1
         // Validates interaction chains and removes ones with null context before they cause NPE
         if (config.isSanitizerEnabled("interactionManager")) {
             interactionManagerSanitizer = new InteractionManagerSanitizer(this);
@@ -170,7 +170,7 @@ public class HyzenKernel extends JavaPlugin {
         }
 
         // Fix 10: SpawnBeacon null RoleSpawnParameters crash (v1.3.7)
-        // GitHub Issue: https://github.com/HyzenNet/Kernel/issues/4
+        // GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/4
         // Validates spawn parameters before BeaconSpawnController.createRandomSpawnJob() can crash
         if (config.isSanitizerEnabled("spawnBeacon")) {
             spawnBeaconSanitizer = new SpawnBeaconSanitizer(this);
@@ -181,13 +181,13 @@ public class HyzenKernel extends JavaPlugin {
         }
 
         // Fix 11: SpawnMarkerReference null npcReferences crash (v1.3.8)
-        // GitHub Issue: https://github.com/HyzenNet/Kernel/issues/5
+        // GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/5
         // MOVED TO EARLY PLUGIN in v1.4.0 - Now fixed via bytecode transformation
         // The early plugin transforms SpawnMarkerEntity constructor to initialize npcReferences
         getLogger().at(Level.INFO).log("[MOVED] SpawnMarkerReferenceSanitizer - now fixed via early plugin bytecode transformation");
 
         // Fix 14: Default World Recovery (v1.4.3)
-        // GitHub Issue: https://github.com/HyzenNet/Kernel/issues/23
+        // GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/23
         // Automatically reloads the default world when it crashes exceptionally
         if (config.isSanitizerEnabled("defaultWorldRecovery")) {
             defaultWorldRecoverySanitizer = new DefaultWorldRecoverySanitizer(this);
@@ -198,7 +198,7 @@ public class HyzenKernel extends JavaPlugin {
         }
 
         // Fix 12: ChunkTracker null PlayerRef crash (v1.3.9)
-        // GitHub Issue: https://github.com/HyzenNet/Kernel/issues/6
+        // GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/6
         // Prevents world crash when ChunkTracker has invalid PlayerRefs after player disconnect
         if (config.isSanitizerEnabled("chunkTracker")) {
             chunkTrackerSanitizer = new ChunkTrackerSanitizer(this);

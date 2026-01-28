@@ -14,7 +14,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * is null - which happens when entities are removed during chunk unload before
  * their UUID component is fully initialized.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/28">GitHub Issue #28</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/28">GitHub Issue #28</a>
  */
 public class UUIDSystemTransformer implements ClassTransformer {
 

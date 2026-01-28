@@ -35,7 +35,7 @@ import java.util.logging.Level;
 /**
  * CleanWarpsCommand - Finds and removes orphaned warp entries from warps.json
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/11
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/11
  *
  * The Bug:
  * When teleporters are deleted but the TrackedPlacement component fails,

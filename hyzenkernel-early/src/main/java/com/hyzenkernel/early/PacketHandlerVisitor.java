@@ -19,7 +19,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * Our fix replaces the hardcoded values with configurable ones:
  * (avg_ping * pingMultiplier) + baseTimeoutMs
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/25">GitHub Issue #25</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/25">GitHub Issue #25</a>
  */
 public class PacketHandlerVisitor extends ClassVisitor {
 

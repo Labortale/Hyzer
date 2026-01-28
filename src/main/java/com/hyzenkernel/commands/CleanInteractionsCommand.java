@@ -23,7 +23,7 @@ import java.util.logging.Level;
 /**
  * CleanInteractionsCommand - Removes orphaned interaction zones from deleted blocks
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/11
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/11
  *
  * The Bug:
  * When teleporters (or other interactable blocks) are removed while the TrackedPlacement

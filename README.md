@@ -25,13 +25,13 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 
 ### Runtime Plugin (Required)
 
-1. Download `hyzenkernel-X.X.X.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
+1. Download `hyzenkernel-X.X.X.jar` from [Releases](https://github.com/DuvyDev/HyzenKernel/releases)
 2. Place in your server's `mods/` directory
 3. Restart the server
 
 ### Early Plugin (Recommended)
 
-1. Download `hyzenkernel-early-X.X.X.jar` from [Releases](https://github.com/HyzenNet/Kernel/releases)
+1. Download `hyzenkernel-early-X.X.X.jar` from [Releases](https://github.com/DuvyDev/HyzenKernel/releases)
 2. Place in your server's `earlyplugins/` directory
 3. Start the server with early plugins enabled:
    - Set `ACCEPT_EARLY_PLUGINS=1` environment variable, OR
@@ -223,24 +223,12 @@ Look for these log messages at startup (23 transformers):
 
 ---
 
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [BUGS_FIXED.md](BUGS_FIXED.md) | Detailed technical info on every bug we fix |
-| [HYTALE_CORE_BUGS.md](HYTALE_CORE_BUGS.md) | Bugs that require Hytale developers to fix |
-| [CHANGELOG.md](CHANGELOG.md) | Version history and release notes |
-
----
-
 ## Support
 
-**Found a bug?** Please report it on [GitHub Issues](https://github.com/HyzenNet/Kernel/issues) with:
+**Found a bug?** Please report it on [GitHub Issues](https://github.com/DuvyDev/HyzenKernel/issues) with:
 - Server logs showing the error
 - Steps to reproduce (if known)
 - HyzenKernel version
-
-**Need help?** Join our [Discord](https://discord.gg/6g7McTd27z) for community support!
 
 ---
 
@@ -250,7 +238,7 @@ Requires Java 25 and access to `HytaleServer.jar`.
 
 ```bash
 # Clone the repo
-git clone https://github.com/HyzenNet/Kernel.git
+git clone https://github.com/DuvyDev/HyzenKernel.git
 cd Kernel
 
 # Place HytaleServer.jar in libs/ directory
@@ -266,14 +254,6 @@ cd hyzenkernel-early
 ./gradlew build
 # Output: build/libs/hyzenkernel-early-1.0.0.jar
 ```
-
----
-
-## CI/CD
-
-This repository uses GitHub Actions to automatically:
-- Build on every push to `main`
-- Create releases when you push a version tag (`v1.0.0`, `v1.0.1`, etc.)
 
 ---
 

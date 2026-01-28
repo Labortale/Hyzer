@@ -28,7 +28,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * This ensures teleporter limits are properly decremented even if there
  * are race conditions or component ordering issues.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/11">GitHub Issue #11</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/11">GitHub Issue #11</a>
  */
 public class TrackedPlacementTransformer implements ClassTransformer {
 
@@ -56,7 +56,7 @@ public class TrackedPlacementTransformer implements ClassTransformer {
         separator();
         info("Transforming TrackedPlacement$OnAddRemove class...");
         verbose("Fixing BlockCounter decrement null check bug");
-        verbose("Issue: https://github.com/HyzenNet/Kernel/issues/11");
+        verbose("Issue: https://github.com/DuvyDev/HyzenKernel/issues/11");
         separator();
 
         try {

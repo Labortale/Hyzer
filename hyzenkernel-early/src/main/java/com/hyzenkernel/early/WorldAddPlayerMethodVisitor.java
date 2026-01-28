@@ -30,7 +30,7 @@ import org.objectweb.asm.Opcodes;
  *       System.out.println("[HyzenKernel-Early] Race condition resolved");
  *   }
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/7">GitHub Issue #7</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/7">GitHub Issue #7</a>
  */
 public class WorldAddPlayerMethodVisitor extends MethodVisitor {
 

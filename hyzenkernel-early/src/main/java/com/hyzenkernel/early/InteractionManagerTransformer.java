@@ -24,7 +24,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * dump full InteractionContext objects which can produce hundreds of lines per occurrence.
  * We downgrade these logs from SEVERE to FINE (debug) level.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/40">Issue #40</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/40">Issue #40</a>
  */
 public class InteractionManagerTransformer implements ClassTransformer {
 

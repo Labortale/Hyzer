@@ -23,7 +23,7 @@ import java.util.logging.Level;
 /**
  * InteractionManagerSanitizer - Prevents NPE crashes during interaction tick
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/1
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/1
  *
  * The Bug:
  * When a player opens a crafttable at specific locations, the InteractionManager

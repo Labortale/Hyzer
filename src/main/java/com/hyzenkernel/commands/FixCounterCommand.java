@@ -32,7 +32,7 @@ import java.util.Map;
  *   /fixcounter <block> reset       - Reset specific block type
  *   /fixcounter <block> set <value> - Set specific block type count
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/11">GitHub Issue #11</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/11">GitHub Issue #11</a>
  */
 public class FixCounterCommand extends AbstractPlayerCommand {
 

@@ -19,7 +19,7 @@ import java.util.logging.Level;
 /**
  * SpawnMarkerReferenceSanitizer - Prevents world crash when spawn markers have null npcReferences
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/5
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/5
  *
  * The Bug:
  * When a player enters a chunk with spawn markers that have corrupted state, the server can crash with:

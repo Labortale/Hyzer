@@ -16,7 +16,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  *
  * We wrap the async lambda with try-catch and perform fallback cleanup.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/34">GitHub Issue #34</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/34">GitHub Issue #34</a>
  */
 public class UniverseTransformer implements ClassTransformer {
 

@@ -20,7 +20,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * Wrap the method body in a try-catch for IndexOutOfBoundsException
  * and return null instead of crashing.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/20">GitHub Issue #20</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/20">GitHub Issue #20</a>
  */
 public class ArchetypeChunkVisitor extends ClassVisitor {
 

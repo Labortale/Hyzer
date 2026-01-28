@@ -20,7 +20,7 @@ import java.util.logging.Level;
 /**
  * FIX: SpawnBeacon Null RoleSpawnParameters Crash
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/4
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/4
  *
  * PROBLEM: Hytale's BeaconSpawnController.createRandomSpawnJob() at line 110 calls:
  *   spawn.getId()

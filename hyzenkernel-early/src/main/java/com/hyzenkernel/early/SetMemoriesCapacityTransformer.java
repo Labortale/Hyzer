@@ -19,7 +19,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * PlayerMemories.getComponentType().isValid() returns false. If invalid,
  * the interaction fails gracefully instead of crashing and kicking the player.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/52">Issue #52</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/52">Issue #52</a>
  */
 public class SetMemoriesCapacityTransformer implements ClassTransformer {
 

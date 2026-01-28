@@ -110,7 +110,7 @@ public class ConfigManager {
         // Add comment header
         String header = "// HyzenKernel Configuration\n" +
                 "// Delete this file to regenerate defaults\n" +
-                "// For documentation, see: https://github.com/HyzenNet/Kernel\n\n";
+                "// For documentation, see: https://github.com/DuvyDev/HyzenKernel\n\n";
         
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                 Files.newOutputStream(CONFIG_PATH), StandardCharsets.UTF_8))) {

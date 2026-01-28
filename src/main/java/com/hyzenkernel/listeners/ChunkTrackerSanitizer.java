@@ -22,7 +22,7 @@ import java.util.logging.Level;
 /**
  * ChunkTrackerSanitizer - Prevents world crash when ChunkTracker has invalid PlayerRefs
  *
- * GitHub Issue: https://github.com/HyzenNet/Kernel/issues/6
+ * GitHub Issue: https://github.com/DuvyDev/HyzenKernel/issues/6
  *
  * The Bug:
  * When a player disconnects, ChunkTracker.tryUnloadChunk() can crash with:

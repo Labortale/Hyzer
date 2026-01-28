@@ -21,9 +21,9 @@ import org.objectweb.asm.Opcodes;
  *
  * Method signature: private InteractionSyncData serverTick(Ref, InteractionChain, long)
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/40">Issue #40</a>
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/46">Issue #46</a>
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/51">Issue #51</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/40">Issue #40</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/46">Issue #46</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/51">Issue #51</a>
  */
 public class ServerTickMethodVisitor extends MethodVisitor {
 

@@ -26,7 +26,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * Transform putInteractionSyncData() to handle negative indices by expanding the
  * buffer backwards instead of dropping data.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/blob/main/HYTALE_CORE_BUGS.md">HYTALE_CORE_BUGS.md</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/blob/main/HYTALE_CORE_BUGS.md">HYTALE_CORE_BUGS.md</a>
  */
 public class InteractionChainTransformer implements ClassTransformer {
 

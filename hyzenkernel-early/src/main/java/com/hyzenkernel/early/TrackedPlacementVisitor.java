@@ -34,7 +34,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  *   counter.untrackBlock(blockName);
  *   System.out.println("[HyzenKernel-Early] Decremented counter for: " + blockName);
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/11">GitHub Issue #11</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/11">GitHub Issue #11</a>
  */
 public class TrackedPlacementVisitor extends ClassVisitor {
 

@@ -36,7 +36,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * instead of removeComponent(). The tryRemoveComponent() method safely checks if the
  * component exists before attempting removal, returning false instead of throwing.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/12">GitHub Issue #12</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/12">GitHub Issue #12</a>
  */
 public class CommandBufferTransformer implements ClassTransformer {
 

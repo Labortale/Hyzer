@@ -173,7 +173,7 @@ if (Test-Path $ManifestPath) {
       "Url": "https://github.com/HyzenNet"
     }
   ],
-  "Website": "https://github.com/HyzenNet/Kernel",
+  "Website": "https://github.com/DuvyDev/HyzenKernel",
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {},

@@ -15,7 +15,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * Java 21+ removed Thread.stop() - it now throws UnsupportedOperationException.
  * We wrap the call in try-catch and fall back to Thread.interrupt().
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/32">GitHub Issue #32</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/32">GitHub Issue #32</a>
  */
 public class TickingThreadTransformer implements ClassTransformer {
 

@@ -28,7 +28,7 @@ import static com.hyzenkernel.early.EarlyLogger.*;
  * throwing an exception when a duplicate is detected. This makes the method
  * idempotent - calling it multiple times with the same position is safe.
  *
- * @see <a href="https://github.com/HyzenNet/Kernel/issues/8">GitHub Issue #8</a>
+ * @see <a href="https://github.com/DuvyDev/HyzenKernel/issues/8">GitHub Issue #8</a>
  */
 public class BlockComponentChunkTransformer implements ClassTransformer {
 
