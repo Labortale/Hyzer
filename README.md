@@ -168,6 +168,9 @@ To disable the static shared instance system and revert to vanilla behavior, set
 }
 ```
 
+Note: if you already created `instance-shared-*` worlds, they will remain on disk.
+To fully return to vanilla instance behavior, delete those folders under your server `worlds/` directory.
+
 ## Admin Commands
 
 | Command | Aliases | Description |
