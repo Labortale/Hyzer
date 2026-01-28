@@ -49,6 +49,7 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | RespawnBlock Crash | Critical | Player kicked when breaking bed |
 | ProcessingBench Crash | Critical | Player kicked when bench is destroyed |
 | Instance Exit Crash | Critical | Player kicked when exiting dungeon |
+| Shared Instance Persistence | Medium | Keeps shared portal terrain on disk between runs |
 | CraftingManager Crash | Critical | Player kicked when opening bench |
 | InteractionManager Crash | Critical | Player kicked during interactions |
 | Quest Objective Crash | Critical | Quest system crashes |
@@ -61,6 +62,10 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 | Sync Buffer Overflow | Critical | Combat/food/tool desync, 400-2500 errors/session |
 | Sync Position Gap | Critical | Player kicked with "out of order" exception |
 | Instance Portal Race | Critical | Player kicked when entering instance portals (retry loop fix) |
+| Static Shared Instances | Medium | Reuses instance-shared worlds; only new chunks are saved (terrain persists) |
+| SpawnProvider Persistence | Medium | Prevents return portal drift by persisting spawn providers |
+| Shared Instance Removal Guard | Medium | Prevents shared instance worlds from being auto-removed |
+| Return Portal Stack Guard | Medium | Prevents multiple return portals stacking in shared instances |
 | Null SpawnController | Critical | World crashes when spawn beacons load |
 | Null Spawn Parameters | Critical | World crashes in volcanic/cave biomes |
 | WorldSpawningSystem Invalid Ref | Critical | World thread crash during spawn job creation (invalid chunk ref) |
@@ -148,6 +153,21 @@ if (adjustedIndex < 0) {
 
 ## Configuration
 
+### Persistent Shared Instances
+
+To disable the static shared instance system and revert to vanilla behavior, set:
+
+```json
+{
+  "sanitizers": {
+    "sharedInstancePersistence": false
+  },
+  "transformers": {
+    "staticSharedInstances": false
+  }
+}
+```
+
 ## Admin Commands
 
 | Command | Aliases | Description |
@@ -172,7 +192,7 @@ Look for these log messages at startup:
 
 ### Early Plugin Loaded
 
-Look for these log messages at startup (18 transformers):
+Look for these log messages at startup (23 transformers):
 ```
 [HyzenKernel-Early] InteractionChain transformation COMPLETE!
 [HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
@@ -187,6 +207,11 @@ Look for these log messages at startup (18 transformers):
 [HyzenKernel-Early] TickingThread transformation COMPLETE!
 [HyzenKernel-Early] Universe transformation COMPLETE!
 [HyzenKernel-Early] World transformation COMPLETE!
+[HyzenKernel-Early] InstancesPlugin transformation COMPLETE!
+[HyzenKernel-Early] ChunkSavingSystems transformation COMPLETE!
+[HyzenKernel-Early] WorldConfig SpawnProvider transformation COMPLETE!
+[HyzenKernel-Early] RemovalSystem transformation COMPLETE!
+[HyzenKernel-Early] PortalDeviceSummonPage transformation COMPLETE!
 [HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
 [HyzenKernel-Early] WorldSpawningSystem transformation COMPLETE!
 [HyzenKernel-Early] LivingEntity transformation COMPLETE!

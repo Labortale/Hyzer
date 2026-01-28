@@ -212,6 +212,7 @@ public class ConfigManager {
             case "gatherobjective" -> s.gatherObjective;
             case "emptyarchetype" -> s.emptyArchetype;
             case "instancepositiontracker" -> s.instancePositionTracker;
+            case "sharedinstancepersistence" -> s.sharedInstancePersistence;
             case "defaultworldrecovery" -> s.defaultWorldRecovery;
             default -> {
                 System.err.println("[HyzenKernel-Config] Unknown sanitizer: " + name);
@@ -237,6 +238,7 @@ public class ConfigManager {
             case "commandbuffer" -> t.commandBuffer;
             case "worldmaptracker" -> t.worldMapTracker;
             case "archetypechunk" -> t.archetypeChunk;
+            case "staticsharedinstances" -> t.staticSharedInstances;
             default -> {
                 System.err.println("[HyzenKernel-Config] Unknown transformer: " + name);
                 yield true; // Default to enabled for safety

@@ -17,6 +17,7 @@ import com.hyzenkernel.listeners.DefaultWorldRecoverySanitizer;
 import com.hyzenkernel.listeners.SpawnBeaconSanitizer;
 import com.hyzenkernel.listeners.ChunkTrackerSanitizer;
 import com.hyzenkernel.systems.InteractionChainMonitor;
+import com.hyzenkernel.systems.SharedInstancePersistenceSystem;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
@@ -34,6 +35,7 @@ import java.util.logging.Level;
  * - ProcessingBenchSanitizer: Prevents crash when breaking processing benches with open windows
  * - EmptyArchetypeSanitizer: Monitors for entities with invalid state (empty archetypes)
  * - InstancePositionTracker: Prevents kick when exiting instances with missing return world
+ * - SharedInstancePersistenceSystem: Keeps shared portal instance terrain persistent
  * - GatherObjectiveTaskSanitizer: Prevents crash from null refs in quest objectives (v1.3.0)
  * - InteractionChainMonitor: Tracks unfixable Hytale bugs for reporting (v1.3.0)
  * - CraftingManagerSanitizer: Prevents crash from stale bench references (v1.3.1)
@@ -119,6 +121,15 @@ public class HyzenKernel extends JavaPlugin {
             getLogger().at(Level.INFO).log("[FIX] InstancePositionTracker registered - prevents crash when exiting instances with missing return world");
         } else {
             getLogger().at(Level.INFO).log("[DISABLED] InstancePositionTracker - disabled via config");
+        }
+
+        // Fix 5: Shared portal instance persistence (static terrain)
+        // Prevents shared instance worlds from being deleted on unload
+        if (config.isSanitizerEnabled("sharedInstancePersistence")) {
+            getChunkStoreRegistry().registerSystem(new SharedInstancePersistenceSystem(this));
+            getLogger().at(Level.INFO).log("[FIX] SharedInstancePersistenceSystem registered - keeps shared portal terrain on disk");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] SharedInstancePersistenceSystem - disabled via config");
         }
 
         // Fix 6: GatherObjectiveTask null ref crash (v1.3.0)
