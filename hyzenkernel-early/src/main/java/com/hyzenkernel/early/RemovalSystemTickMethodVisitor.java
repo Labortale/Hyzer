@@ -107,7 +107,8 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
         target.visitVarInsn(Opcodes.ALOAD, 6);
         target.visitJumpInsn(Opcodes.IFNULL, returnLabel);
 
-        // if (name.startsWith("instance-shared-")) return;
+        // if (name.startsWith("instance-shared-")) handle timeout-only removal
+        Label notShared = new Label();
         target.visitVarInsn(Opcodes.ALOAD, 6);
         target.visitLdcInsn("instance-shared-");
         target.visitMethodInsn(
@@ -117,7 +118,71 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
                 "(Ljava/lang/String;)Z",
                 false
         );
-        target.visitJumpInsn(Opcodes.IFNE, returnLabel);
+        target.visitJumpInsn(Opcodes.IFEQ, notShared);
+
+        // PortalWorld portalWorld = world.getEntityStore().getStore().getResource(PortalWorld.getResourceType());
+        target.visitVarInsn(Opcodes.ALOAD, 5);
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/server/core/universe/world/World",
+                "getEntityStore",
+                "()Lcom/hypixel/hytale/server/core/universe/world/storage/EntityStore;",
+                false
+        );
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/server/core/universe/world/storage/EntityStore",
+                "getStore",
+                "()Lcom/hypixel/hytale/component/Store;",
+                false
+        );
+        target.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "com/hypixel/hytale/builtin/portals/resources/PortalWorld",
+                "getResourceType",
+                "()Lcom/hypixel/hytale/component/ResourceType;",
+                false
+        );
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/component/Store",
+                "getResource",
+                "(Lcom/hypixel/hytale/component/ResourceType;)Lcom/hypixel/hytale/component/Resource;",
+                false
+        );
+        target.visitTypeInsn(Opcodes.CHECKCAST, "com/hypixel/hytale/builtin/portals/resources/PortalWorld");
+        target.visitVarInsn(Opcodes.ASTORE, 7);
+
+        // if (portalWorld == null) return;
+        target.visitVarInsn(Opcodes.ALOAD, 7);
+        target.visitJumpInsn(Opcodes.IFNULL, returnLabel);
+
+        // if (portalWorld.getPortalType() == null) return;
+        target.visitVarInsn(Opcodes.ALOAD, 7);
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/builtin/portals/resources/PortalWorld",
+                "getPortalType",
+                "()Lcom/hypixel/hytale/server/core/asset/type/portalworld/PortalType;",
+                false
+        );
+        target.visitJumpInsn(Opcodes.IFNULL, returnLabel);
+
+        // if (portalWorld.getRemainingSeconds(world) > 0) return;
+        target.visitVarInsn(Opcodes.ALOAD, 7);
+        target.visitVarInsn(Opcodes.ALOAD, 5);
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/builtin/portals/resources/PortalWorld",
+                "getRemainingSeconds",
+                "(Lcom/hypixel/hytale/server/core/universe/world/World;)D",
+                false
+        );
+        target.visitInsn(Opcodes.DCONST_0);
+        target.visitInsn(Opcodes.DCMPL);
+        target.visitJumpInsn(Opcodes.IFGT, returnLabel);
+
+        target.visitLabel(notShared);
 
         // data.setRemoving(true);
         target.visitVarInsn(Opcodes.ALOAD, 4);
@@ -150,7 +215,7 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
 
         target.visitLabel(returnLabel);
         target.visitInsn(Opcodes.RETURN);
-        target.visitMaxs(4, 7);
+        target.visitMaxs(4, 9);
         target.visitEnd();
     }
 
