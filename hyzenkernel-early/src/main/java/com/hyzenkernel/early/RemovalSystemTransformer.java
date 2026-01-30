@@ -2,17 +2,13 @@ package com.hyzenkernel.early;
 
 import com.hyzenkernel.early.config.EarlyConfigManager;
 import com.hypixel.hytale.plugin.early.ClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
 
 import static com.hyzenkernel.early.EarlyLogger.*;
 
 /**
  * HyzenKernel Early Plugin - RemovalSystem Transformer
  *
- * Prevents auto-removal of shared portal instances (instance-shared-*) so
- * portal devices keep a valid destination world.
+ * Reserved for legacy behavior. Currently no-ops to preserve vanilla portal removal timing.
  */
 public class RemovalSystemTransformer implements ClassTransformer {
 
@@ -35,28 +31,9 @@ public class RemovalSystemTransformer implements ClassTransformer {
             return classBytes;
         }
 
-        separator();
-        info("Transforming RemovalSystem...");
-        verbose("Skipping auto-removal for instance-shared worlds");
-        separator();
-
-        try {
-            ClassReader reader = new ClassReader(classBytes);
-            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            ClassVisitor visitor = new RemovalSystemVisitor(writer);
-
-            reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-
-            byte[] transformedBytes = writer.toByteArray();
-            info("RemovalSystem transformation COMPLETE!");
-            verbose("Original size: " + classBytes.length + " bytes");
-            verbose("Transformed size: " + transformedBytes.length + " bytes");
-
-            return transformedBytes;
-        } catch (Exception e) {
-            error("ERROR: Failed to transform RemovalSystem!");
-            error("Returning original bytecode to prevent crash.", e);
-            return classBytes;
-        }
+        // Preserve vanilla removal behavior for portal instances.
+        // Shared-world reuse is handled elsewhere; we don't want to block normal closure timers.
+        info("RemovalSystemTransformer SKIPPED to preserve vanilla portal removal behavior");
+        return classBytes;
     }
 }

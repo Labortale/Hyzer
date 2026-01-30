@@ -64,28 +64,7 @@ public class PortalDeviceSummonSpawnReturnMethodVisitor extends AdviceAdapter {
         mv.visitVarInsn(Opcodes.ALOAD, 1);
         mv.visitJumpInsn(Opcodes.IFNULL, continueOriginal);
 
-        // Reset timer for shared instances on every portal open
-        // portalWorld.setRemainingSeconds(world, portalWorld.getTimeLimitSeconds());
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitMethodInsn(
-                Opcodes.INVOKEVIRTUAL,
-                "com/hypixel/hytale/builtin/portals/resources/PortalWorld",
-                "getTimeLimitSeconds",
-                "()I",
-                false
-        );
-        mv.visitInsn(Opcodes.I2D);
-        mv.visitMethodInsn(
-                Opcodes.INVOKEVIRTUAL,
-                "com/hypixel/hytale/builtin/portals/resources/PortalWorld",
-                "setRemainingSeconds",
-                "(Lcom/hypixel/hytale/server/core/universe/world/World;D)V",
-                false
-        );
-
-        // Reset InstanceDataResource timers so shared worlds don't instantly close
+        // Reset InstanceDataResource timers so shared worlds behave like a fresh instance
         int dataLocal = newLocal(Type.getType("Lcom/hypixel/hytale/builtin/instances/removal/InstanceDataResource;"));
         mv.visitVarInsn(Opcodes.ALOAD, 0);
         mv.visitMethodInsn(
