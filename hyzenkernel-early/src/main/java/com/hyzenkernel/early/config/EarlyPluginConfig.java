@@ -41,6 +41,8 @@ public class EarlyPluginConfig {
         public boolean livingEntity = true;
         public boolean worldSpawningSystem = true;
         public boolean staticSharedInstances = true;
+        public boolean gamePacketHandler = true;
+        public boolean blockHealthSystem = true;
     }
 
     /**

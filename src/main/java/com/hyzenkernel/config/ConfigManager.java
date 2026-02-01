@@ -239,6 +239,8 @@ public class ConfigManager {
             case "worldmaptracker" -> t.worldMapTracker;
             case "archetypechunk" -> t.archetypeChunk;
             case "staticsharedinstances" -> t.staticSharedInstances;
+            case "gamepackethandler" -> t.gamePacketHandler;
+            case "blockhealthsystem" -> t.blockHealthSystem;
             default -> {
                 System.err.println("[HyzenKernel-Config] Unknown transformer: " + name);
                 yield true; // Default to enabled for safety

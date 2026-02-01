@@ -114,6 +114,8 @@ public class HyzenKernelConfig {
         public boolean universeRemovePlayer = true;
         public boolean worldSpawningSystem = true;
         public boolean staticSharedInstances = true;
+        public boolean gamePacketHandler = true;
+        public boolean blockHealthSystem = true;
     }
 
     /**

@@ -142,6 +142,8 @@ public class EarlyConfigManager {
             case "livingentity" -> t.livingEntity;
             case "worldspawningsystem" -> t.worldSpawningSystem;
             case "staticsharedinstances" -> t.staticSharedInstances;
+            case "gamepackethandler" -> t.gamePacketHandler;
+            case "blockhealthsystem" -> t.blockHealthSystem;
             default -> {
                 System.err.println("[HyzenKernel-Early-Config] Unknown transformer: " + name);
                 yield true; // Default to enabled for safety

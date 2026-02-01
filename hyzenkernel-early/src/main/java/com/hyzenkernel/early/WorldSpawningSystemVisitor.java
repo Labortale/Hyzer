@@ -13,12 +13,15 @@ import static com.hyzenkernel.early.EarlyLogger.verbose;
 public class WorldSpawningSystemVisitor extends ClassVisitor {
 
     private static final String PICK_RANDOM_CHUNK_METHOD = "pickRandomChunk";
+    private static final String TICK_METHOD = "tick";
     private static final String PICK_RANDOM_CHUNK_DESCRIPTOR =
             "(Lcom/hypixel/hytale/server/spawning/world/WorldEnvironmentSpawnData;" +
             "Lcom/hypixel/hytale/server/spawning/world/WorldNPCSpawnStat;" +
             "Lcom/hypixel/hytale/server/spawning/world/WorldSpawnData;" +
             "Lcom/hypixel/hytale/component/Store;)" +
             "Lcom/hypixel/hytale/component/Ref;";
+    private static final String TICK_DESCRIPTOR =
+            "(FILcom/hypixel/hytale/component/Store;)V";
 
     public WorldSpawningSystemVisitor(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
@@ -32,6 +35,12 @@ public class WorldSpawningSystemVisitor extends ClassVisitor {
             verbose("Found method: " + name + descriptor);
             verbose("Applying InvalidRef protection...");
             return new PickRandomChunkMethodVisitor(mv);
+        }
+
+        if (name.equals(TICK_METHOD) && descriptor.equals(TICK_DESCRIPTOR)) {
+            verbose("Found method: " + name + descriptor);
+            verbose("Applying spawn tick null guard...");
+            return new WorldSpawningSystemTickMethodVisitor(mv);
         }
 
         return mv;

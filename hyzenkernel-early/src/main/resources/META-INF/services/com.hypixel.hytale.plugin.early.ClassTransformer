@@ -9,11 +9,13 @@ com.hyzenkernel.early.CommandBufferTransformer
 com.hyzenkernel.early.WorldMapTrackerTransformer
 com.hyzenkernel.early.ArchetypeChunkTransformer
 com.hyzenkernel.early.PacketHandlerTransformer
+com.hyzenkernel.early.GamePacketHandlerTransformer
 com.hyzenkernel.early.UUIDSystemTransformer
 com.hyzenkernel.early.TickingThreadTransformer
 com.hyzenkernel.early.UniverseTransformer
 com.hyzenkernel.early.LivingEntityTransformer
 com.hyzenkernel.early.SetMemoriesCapacityTransformer
+com.hyzenkernel.early.BlockHealthSystemTransformer
 com.hyzenkernel.early.WorldSpawningSystemTransformer
 com.hyzenkernel.early.PrefabLoaderTransformer
 com.hyzenkernel.early.InstancesPluginTransformer

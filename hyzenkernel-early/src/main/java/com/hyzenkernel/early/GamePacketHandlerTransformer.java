@@ -9,19 +9,15 @@ import org.objectweb.asm.ClassWriter;
 import static com.hyzenkernel.early.EarlyLogger.*;
 
 /**
- * HyzenKernel Early Plugin - WorldSpawningSystem Bytecode Transformer
+ * HyzenKernel Early Plugin - GamePacketHandler Bytecode Transformer
  *
- * Fixes sporadic Invalid entity reference crashes when chunk refs become
- * invalid during WorldSpawningSystem.pickRandomChunk() while chunks unload.
- *
- * The Fix:
- * Wrap pickRandomChunk() in a try-catch for IllegalStateException and return null
- * so the spawn job is skipped instead of crashing the WorldThread.
+ * Mitigates NPE crashes when stale player refs cause getComponent() to return null.
+ * We guard the ClientMovement lambda to skip the task instead of crashing the world.
  */
-public class WorldSpawningSystemTransformer implements ClassTransformer {
+public class GamePacketHandlerTransformer implements ClassTransformer {
 
     private static final String TARGET_CLASS =
-            "com.hypixel.hytale.server.spawning.world.system.WorldSpawningSystem";
+            "com.hypixel.hytale.server.core.io.handlers.game.GamePacketHandler";
 
     @Override
     public int priority() {
@@ -34,32 +30,31 @@ public class WorldSpawningSystemTransformer implements ClassTransformer {
             return classBytes;
         }
 
-        if (!EarlyConfigManager.getInstance().isTransformerEnabled("worldSpawningSystem")) {
-            info("WorldSpawningSystemTransformer DISABLED by config");
+        if (!EarlyConfigManager.getInstance().isTransformerEnabled("gamePacketHandler")) {
+            info("GamePacketHandlerTransformer DISABLED by config");
             return classBytes;
         }
 
         separator();
-        info("Transforming WorldSpawningSystem...");
-        verbose("Adding invalid ref guard in pickRandomChunk()");
-        verbose("Adding null guard in tick()");
+        info("Transforming GamePacketHandler...");
+        verbose("Adding ClientMovement lambda NPE guard");
         separator();
 
         try {
             ClassReader reader = new ClassReader(classBytes);
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            ClassVisitor visitor = new WorldSpawningSystemVisitor(writer);
+            ClassVisitor visitor = new GamePacketHandlerVisitor(writer);
 
             reader.accept(visitor, ClassReader.EXPAND_FRAMES);
 
             byte[] transformedBytes = writer.toByteArray();
-            info("WorldSpawningSystem transformation COMPLETE!");
+            info("GamePacketHandler transformation COMPLETE!");
             verbose("Original size: " + classBytes.length + " bytes");
             verbose("Transformed size: " + transformedBytes.length + " bytes");
 
             return transformedBytes;
         } catch (Exception e) {
-            error("ERROR: Failed to transform WorldSpawningSystem!");
+            error("ERROR: Failed to transform GamePacketHandler!");
             error("Returning original bytecode to prevent crash.", e);
             return classBytes;
         }
