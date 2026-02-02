@@ -153,6 +153,66 @@ if (adjustedIndex < 0) {
 
 ## Configuration
 
+### Optimization (Runtime Plugin)
+
+HyzenKernel includes optional performance optimizations that can replace third-party plugins.
+All options live under `optimization` in `mods/hyzenkernel/config.json`.
+
+**Features**
+- FluidFixer: disables FluidPlugin pre-process on new chunks to avoid long generation stalls.
+- PerPlayerHotRadius: dynamically reduces hot/ticking chunk radius per player based on TPS.
+- ViewRadiusAdjuster: gently adjusts server view radius (1 step at a time) based on TPS.
+- TpsAdjuster: targets stable world TPS (defaults to 20, 5 when empty).
+- ActiveChunkUnloader: safely unloads distant chunks with delay/limits and unload events.
+
+**Example config**
+```json
+{
+  "optimization": {
+    "enabled": true,
+    "minViewRadius": 2,
+    "maxViewRadius": 16,
+    "checkIntervalMillis": 5000,
+    "tps": {
+      "enabled": true,
+      "lowTpsThreshold": 18.0,
+      "recoveryTpsThreshold": 19.5
+    },
+    "tpsAdjuster": {
+      "enabled": true,
+      "tpsLimit": 20,
+      "tpsLimitEmpty": 5,
+      "emptyLimitDelaySeconds": 300,
+      "checkIntervalSeconds": 5,
+      "initialDelaySeconds": 30,
+      "onlyWorlds": []
+    },
+    "perPlayerRadius": {
+      "enabled": true,
+      "minRadius": 2,
+      "maxRadius": 8,
+      "tpsLow": 15.0,
+      "tpsHigh": 18.0
+    },
+    "fluidFixer": {
+      "enabled": true
+    },
+    "chunkUnloader": {
+      "enabled": true,
+      "intervalSeconds": 15,
+      "unloadDistanceOffset": 4,
+      "minLoadedChunks": 100,
+      "unloadDelaySeconds": 30,
+      "maxUnloadsPerRun": 200
+    }
+  }
+}
+```
+
+Notes:
+- `tpsAdjuster.onlyWorlds` can target specific worlds; use `__DEFAULT` for the default world.
+- If `onlyWorlds` is empty, TPS adjustments apply to all worlds.
+
 ### Persistent Shared Instances
 
 To disable the static shared instance system and revert to vanilla behavior, set:

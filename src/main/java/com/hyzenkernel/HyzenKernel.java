@@ -17,12 +17,20 @@ import com.hyzenkernel.listeners.DefaultWorldRecoverySanitizer;
 import com.hyzenkernel.listeners.SharedInstanceBootUnloader;
 import com.hyzenkernel.listeners.SpawnBeaconSanitizer;
 import com.hyzenkernel.listeners.ChunkTrackerSanitizer;
+import com.hyzenkernel.optimization.ActiveChunkUnloader;
+import com.hyzenkernel.optimization.FluidFixerService;
+import com.hyzenkernel.optimization.PerPlayerHotRadiusService;
+import com.hyzenkernel.optimization.TpsAdjuster;
+import com.hyzenkernel.optimization.ViewRadiusAdjuster;
 import com.hyzenkernel.systems.InteractionChainMonitor;
 import com.hyzenkernel.systems.SharedInstancePersistenceSystem;
+import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
 import javax.annotation.Nonnull;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -58,6 +66,17 @@ public class HyzenKernel extends JavaPlugin {
     private DefaultWorldRecoverySanitizer defaultWorldRecoverySanitizer;
     private SharedInstanceBootUnloader sharedInstanceBootUnloader;
 
+    private ViewRadiusAdjuster viewRadiusAdjuster;
+    private PerPlayerHotRadiusService perPlayerHotRadiusService;
+    private ActiveChunkUnloader activeChunkUnloader;
+    private FluidFixerService fluidFixerService;
+    private TpsAdjuster tpsAdjuster;
+
+    private ScheduledFuture<?> viewRadiusTask;
+    private ScheduledFuture<?> perPlayerTask;
+    private ScheduledFuture<?> activeChunkTask;
+    private ScheduledFuture<?> tpsTask;
+
     public HyzenKernel(@Nonnull JavaPluginInit init) {
         super(init);
         instance = this;
@@ -81,6 +100,9 @@ public class HyzenKernel extends JavaPlugin {
 
         // Register bug fix systems
         registerBugFixes();
+
+        // Register optimization systems
+        registerOptimizations();
 
         getLogger().at(Level.INFO).log("HyzenKernel setup complete!");
     }
@@ -216,6 +238,51 @@ public class HyzenKernel extends JavaPlugin {
         registerCommands();
     }
 
+    private void registerOptimizations() {
+        ConfigManager configManager = ConfigManager.getInstance();
+        var optimization = configManager.getConfig().optimization;
+
+        if (optimization == null || !optimization.enabled) {
+            getLogger().at(Level.INFO).log("[DISABLED] Optimization systems - disabled via config");
+            return;
+        }
+
+        if (optimization.fluidFixer != null && optimization.fluidFixer.enabled) {
+            fluidFixerService = new FluidFixerService(getLogger(), optimization.fluidFixer);
+            getLogger().at(Level.INFO).log("[OPT] FluidFixer enabled - disabling fluid pre-process for faster chunk gen");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] FluidFixer - disabled via config");
+        }
+
+        if (optimization.tps != null && optimization.tps.enabled) {
+            viewRadiusAdjuster = new ViewRadiusAdjuster(getLogger(), optimization);
+            getLogger().at(Level.INFO).log("[OPT] ViewRadiusAdjuster enabled - dynamic view radius by TPS");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] ViewRadiusAdjuster - disabled via config");
+        }
+
+        if (optimization.tpsAdjuster != null && optimization.tpsAdjuster.enabled) {
+            tpsAdjuster = new TpsAdjuster(getLogger(), optimization.tpsAdjuster);
+            getLogger().at(Level.INFO).log("[OPT] TpsAdjuster enabled - dynamic world TPS targets");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] TpsAdjuster - disabled via config");
+        }
+
+        if (optimization.perPlayerRadius != null && optimization.perPlayerRadius.enabled) {
+            perPlayerHotRadiusService = new PerPlayerHotRadiusService(getLogger(), optimization.perPlayerRadius);
+            getLogger().at(Level.INFO).log("[OPT] PerPlayerHotRadius enabled - dynamic hot radius by TPS");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] PerPlayerHotRadius - disabled via config");
+        }
+
+        if (optimization.chunkUnloader != null && optimization.chunkUnloader.enabled) {
+            activeChunkUnloader = new ActiveChunkUnloader(getLogger(), optimization);
+            getLogger().at(Level.INFO).log("[OPT] ActiveChunkUnloader enabled - safe unload of distant chunks");
+        } else {
+            getLogger().at(Level.INFO).log("[DISABLED] ActiveChunkUnloader - disabled via config");
+        }
+    }
+
     private void registerCommands() {
         getCommandRegistry().registerCommand(new CleanInteractionsCommand(this));
         getCommandRegistry().registerCommand(new CleanWarpsCommand(this));
@@ -228,11 +295,99 @@ public class HyzenKernel extends JavaPlugin {
     @Override
     protected void start() {
         getLogger().at(Level.INFO).log("HyzenKernel has started! " + getFixCount() + " bug fix(es) active.");
+
+        if (fluidFixerService != null) {
+            fluidFixerService.apply(getEventRegistry());
+        }
+
+        var optimization = ConfigManager.getInstance().getConfig().optimization;
+        if (optimization != null && optimization.enabled) {
+            if (viewRadiusAdjuster != null) {
+                long intervalMs = Math.max(optimization.checkIntervalMillis, 1000);
+                viewRadiusTask = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
+                        () -> {
+                            try {
+                                viewRadiusAdjuster.checkAndAdjust();
+                            } catch (Exception e) {
+                                getLogger().atSevere().withCause(e).log("Error in ViewRadiusAdjuster");
+                            }
+                        },
+                        10,
+                        intervalMs,
+                        TimeUnit.MILLISECONDS);
+            }
+
+            if (tpsAdjuster != null) {
+                long initialDelaySeconds = Math.max(optimization.tpsAdjuster.initialDelaySeconds, 1);
+                long intervalSeconds = Math.max(optimization.tpsAdjuster.checkIntervalSeconds, 1);
+                tpsTask = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
+                        () -> {
+                            try {
+                                tpsAdjuster.execute();
+                            } catch (Exception e) {
+                                getLogger().atSevere().withCause(e).log("Error in TpsAdjuster");
+                            }
+                        },
+                        initialDelaySeconds,
+                        intervalSeconds,
+                        TimeUnit.SECONDS);
+            }
+
+            if (perPlayerHotRadiusService != null) {
+                long intervalMs = Math.max(optimization.checkIntervalMillis, 1000);
+                perPlayerTask = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
+                        () -> {
+                            try {
+                                perPlayerHotRadiusService.checkAndAdjust();
+                            } catch (Exception e) {
+                                getLogger().atSevere().withCause(e).log("Error in PerPlayerHotRadius");
+                            }
+                        },
+                        5000,
+                        intervalMs,
+                        TimeUnit.MILLISECONDS);
+            }
+
+            if (activeChunkUnloader != null) {
+                long intervalSeconds = Math.max(optimization.chunkUnloader.intervalSeconds, 1);
+                activeChunkTask = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
+                        () -> {
+                            try {
+                                activeChunkUnloader.execute();
+                            } catch (Exception e) {
+                                getLogger().atSevere().withCause(e).log("Error in ActiveChunkUnloader");
+                            }
+                        },
+                        60,
+                        intervalSeconds,
+                        TimeUnit.SECONDS);
+            }
+        }
     }
 
     @Override
     protected void shutdown() {
         getLogger().at(Level.INFO).log("HyzenKernel has been disabled.");
+
+        if (viewRadiusTask != null) {
+            viewRadiusTask.cancel(false);
+        }
+        if (tpsTask != null) {
+            tpsTask.cancel(false);
+        }
+        if (perPlayerTask != null) {
+            perPlayerTask.cancel(false);
+        }
+        if (activeChunkTask != null) {
+            activeChunkTask.cancel(false);
+        }
+
+        if (viewRadiusAdjuster != null) {
+            viewRadiusAdjuster.restore();
+        }
+        if (tpsAdjuster != null) {
+            tpsAdjuster.restore();
+        }
     }
 
     private int getFixCount() {

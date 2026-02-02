@@ -38,6 +38,9 @@ public class HyzenKernelConfig {
     // Interaction timeout settings (for early plugin)
     public InteractionTimeoutConfig interactionTimeout = new InteractionTimeoutConfig();
 
+    // Optimization settings
+    public OptimizationConfig optimization = new OptimizationConfig();
+
     /**
      * Sanitizer toggle configuration
      */
@@ -150,6 +153,74 @@ public class HyzenKernelConfig {
 
         /** Multiplier applied to average ping */
         public double pingMultiplier = 3.0;
+    }
+
+    /**
+     * Optimization configuration (runtime plugin)
+     */
+    public static class OptimizationConfig {
+        public boolean enabled = true;
+        public int minViewRadius = 6;
+        public int maxViewRadius = 12;
+        public int checkIntervalMillis = 5000;
+        public TpsConfig tps = new TpsConfig();
+        public TpsAdjusterConfig tpsAdjuster = new TpsAdjusterConfig();
+        public ActiveChunkUnloaderConfig chunkUnloader = new ActiveChunkUnloaderConfig();
+        public PerPlayerRadiusConfig perPlayerRadius = new PerPlayerRadiusConfig();
+        public FluidFixerConfig fluidFixer = new FluidFixerConfig();
+    }
+
+    /**
+     * TPS thresholds for view radius adjustment
+     */
+    public static class TpsConfig {
+        public boolean enabled = true;
+        public double lowTpsThreshold = 18.0;
+        public double recoveryTpsThreshold = 19.5;
+    }
+
+    /**
+     * World TPS adjuster configuration
+     */
+    public static class TpsAdjusterConfig {
+        public boolean enabled = true;
+        public int tpsLimit = 20;
+        public int tpsLimitEmpty = 5;
+        public String[] onlyWorlds = new String[0];
+        public int initialDelaySeconds = 30;
+        public int checkIntervalSeconds = 5;
+        public int emptyLimitDelaySeconds = 300;
+    }
+
+    /**
+     * Active chunk unloader settings
+     */
+    public static class ActiveChunkUnloaderConfig {
+        public boolean enabled = true;
+        public int intervalSeconds = 15;
+        public int unloadDistanceOffset = 4;
+        public int minLoadedChunks = 100;
+        public int unloadDelaySeconds = 30;
+        public int maxUnloadsPerRun = 200;
+    }
+
+    /**
+     * Per-player hot radius settings
+     */
+    public static class PerPlayerRadiusConfig {
+        public boolean enabled = true;
+        public int minRadius = 4;
+        public int maxRadius = 6;
+        public float tpsLow = 15.0f;
+        public float tpsHigh = 18.0f;
+        public int adjustmentStep = 1;
+    }
+
+    /**
+     * Fluid pre-process fixer settings
+     */
+    public static class FluidFixerConfig {
+        public boolean enabled = true;
     }
 
 

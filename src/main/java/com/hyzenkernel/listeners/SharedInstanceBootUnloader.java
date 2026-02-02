@@ -18,15 +18,15 @@ import java.util.logging.Level;
  * Unloads persistent shared instance worlds after server boot.
  *
  * Problem: Universe loads every world folder on startup. This includes
- * instance-shared-* worlds created by shared portals. Those loaded worlds
+ * instance-shared-* and instance-Endgame_* worlds created by shared portals. Those loaded worlds
  * count against the fragment limit even when no players are inside.
  *
- * Solution: After AllWorldsLoadedEvent, unload any instance-shared-* worlds
+ * Solution: After AllWorldsLoadedEvent, unload any instance-shared-* or instance-Endgame_* worlds
  * with zero players. Worlds remain on disk because deleteOnRemove=false.
  */
 public class SharedInstanceBootUnloader {
-
     private static final String SHARED_PREFIX = "instance-shared-";
+    private static final String ENDGAME_PREFIX = "instance-endgame_";
     private static final long UNLOAD_DELAY_MS = 1000L;
 
     private final HyzenKernel plugin;
@@ -84,7 +84,8 @@ public class SharedInstanceBootUnloader {
             if (worldName == null) {
                 continue;
             }
-            if (!worldName.toLowerCase().startsWith(SHARED_PREFIX)) {
+            String worldNameLower = worldName.toLowerCase();
+            if (!worldNameLower.startsWith(SHARED_PREFIX) && !worldNameLower.startsWith(ENDGAME_PREFIX)) {
                 continue;
             }
             if (world.getPlayerCount() > 0) {

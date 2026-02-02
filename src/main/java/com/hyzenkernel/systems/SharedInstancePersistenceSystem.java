@@ -15,16 +15,15 @@ import java.util.logging.Level;
 /**
  * SharedInstancePersistenceSystem
  *
- * Minimal runtime guard for shared portal instances (instance-shared-*):
+ * Minimal runtime guard for shared portal instances (instance-shared-* and instance-Endgame_*):
  * - Forces DeleteOnRemove/DeleteOnUniverseStart to false
  * - Marks config changed so it persists to disk
  *
  * This keeps vanilla instance behavior while ensuring terrain is not deleted.
  */
 public class SharedInstancePersistenceSystem extends TickingSystem<ChunkStore> {
-
     private static final String SHARED_PREFIX = "instance-shared-";
-
+    private static final String ENDGAME_PREFIX = "instance-Endgame_";
     private final HyzenKernel plugin;
     private final Set<String> loggedWorlds = ConcurrentHashMap.newKeySet();
     private boolean loggedOnce = false;
@@ -41,7 +40,8 @@ public class SharedInstancePersistenceSystem extends TickingSystem<ChunkStore> {
         }
 
         String worldName = world.getName();
-        if (worldName == null || !worldName.startsWith(SHARED_PREFIX)) {
+        if (worldName == null || (!worldName.startsWith(SHARED_PREFIX)
+                && !worldName.startsWith(ENDGAME_PREFIX))) {
             return;
         }
 
