@@ -139,7 +139,6 @@ public class EarlyConfigManager {
             case "uuidsystem" -> t.uuidSystem;
             case "tickingthread" -> t.tickingThread;
             case "universeremoveplayer" -> t.universeRemovePlayer;
-            case "livingentity" -> t.livingEntity;
             case "worldspawningsystem" -> t.worldSpawningSystem;
             case "staticsharedinstances" -> t.staticSharedInstances;
             case "gamepackethandler" -> t.gamePacketHandler;

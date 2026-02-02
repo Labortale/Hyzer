@@ -107,8 +107,9 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
         target.visitVarInsn(Opcodes.ALOAD, 6);
         target.visitJumpInsn(Opcodes.IFNULL, returnLabel);
 
-        // if (name.startsWith("instance-shared-")) handle timeout-only removal
+        // if (name.startsWith("instance-shared-") || name.startsWith("instance-Endgame_")) handle timeout-only removal
         Label notShared = new Label();
+        Label sharedMatch = new Label();
         target.visitVarInsn(Opcodes.ALOAD, 6);
         target.visitLdcInsn("instance-shared-");
         target.visitMethodInsn(
@@ -118,7 +119,19 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
                 "(Ljava/lang/String;)Z",
                 false
         );
+        target.visitJumpInsn(Opcodes.IFNE, sharedMatch);
+
+        target.visitVarInsn(Opcodes.ALOAD, 6);
+        target.visitLdcInsn("instance-Endgame_");
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "java/lang/String",
+                "startsWith",
+                "(Ljava/lang/String;)Z",
+                false
+        );
         target.visitJumpInsn(Opcodes.IFEQ, notShared);
+        target.visitLabel(sharedMatch);
 
         // PortalWorld portalWorld = world.getEntityStore().getStore().getResource(PortalWorld.getResourceType());
         target.visitVarInsn(Opcodes.ALOAD, 5);

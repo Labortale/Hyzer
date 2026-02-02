@@ -27,6 +27,7 @@ public class ChunkSavingTryQueueSyncMethodVisitor extends MethodVisitor {
         Label loopEnd = new Label();
         Label continueLabel = new Label();
         Label doSave = new Label();
+        Label skipSave = new Label();
 
         target.visitCode();
 
@@ -176,7 +177,7 @@ public class ChunkSavingTryQueueSyncMethodVisitor extends MethodVisitor {
         target.visitVarInsn(Opcodes.ALOAD, 7);
         target.visitJumpInsn(Opcodes.IFNULL, doSave);
 
-        // if (!worldName.startsWith("instance-shared-")) goto doSave
+        // if (worldName.startsWith("instance-shared-")) goto skipSave
         target.visitVarInsn(Opcodes.ALOAD, 7);
         target.visitLdcInsn("instance-shared-");
         target.visitMethodInsn(
@@ -186,8 +187,22 @@ public class ChunkSavingTryQueueSyncMethodVisitor extends MethodVisitor {
                 "(Ljava/lang/String;)Z",
                 false
         );
+        target.visitJumpInsn(Opcodes.IFNE, skipSave);
+
+        // if (!worldName.startsWith("instance-Endgame_")) goto doSave
+        target.visitVarInsn(Opcodes.ALOAD, 7);
+        target.visitLdcInsn("instance-Endgame_");
+        target.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "java/lang/String",
+                "startsWith",
+                "(Ljava/lang/String;)Z",
+                false
+        );
         target.visitJumpInsn(Opcodes.IFEQ, doSave);
 
+        // skipSave:
+        target.visitLabel(skipSave);
         // worldChunkComponent.consumeNeedsSaving(); continue;
         target.visitVarInsn(Opcodes.ALOAD, 5);
         target.visitMethodInsn(

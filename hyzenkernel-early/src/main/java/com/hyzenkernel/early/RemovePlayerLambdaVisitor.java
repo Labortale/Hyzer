@@ -101,10 +101,38 @@ public class RemovePlayerLambdaVisitor extends MethodVisitor {
             // Exception is on stack - store it
             mv.visitVarInsn(Opcodes.ASTORE, 10);
 
-            // Log warning
-            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
-            mv.visitLdcInsn("[HyzenKernel] Player ref invalid during removal - performing fallback cleanup");
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+            // Log warning with stack trace
+            mv.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "com/hypixel/hytale/logger/HytaleLogger",
+                "getLogger",
+                "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+                false
+            );
+            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+            mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/logger/HytaleLogger",
+                "at",
+                "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                false
+            );
+            mv.visitVarInsn(Opcodes.ALOAD, 10);
+            mv.visitMethodInsn(
+                Opcodes.INVOKEINTERFACE,
+                "com/google/common/flogger/LoggingApi",
+                "withCause",
+                "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+                true
+            );
+            mv.visitLdcInsn("[HyzenKernel] removePlayer failed - running fallback cleanup");
+            mv.visitMethodInsn(
+                Opcodes.INVOKEINTERFACE,
+                "com/google/common/flogger/LoggingApi",
+                "log",
+                "(Ljava/lang/String;)V",
+                true
+            );
 
             // === TRY FALLBACK CLEANUP ===
             Label cleanupTryStart = new Label();
@@ -132,19 +160,67 @@ public class RemovePlayerLambdaVisitor extends MethodVisitor {
                 false);
 
             // Log success
-            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+            mv.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "com/hypixel/hytale/logger/HytaleLogger",
+                "getLogger",
+                "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+                false
+            );
+            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "INFO", "Ljava/util/logging/Level;");
+            mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/logger/HytaleLogger",
+                "at",
+                "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                false
+            );
             mv.visitLdcInsn("[HyzenKernel] ChunkTracker cleared - memory leak prevented");
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+            mv.visitMethodInsn(
+                Opcodes.INVOKEINTERFACE,
+                "com/google/common/flogger/LoggingApi",
+                "log",
+                "(Ljava/lang/String;)V",
+                true
+            );
 
             mv.visitLabel(cleanupTryEnd);
             mv.visitJumpInsn(Opcodes.GOTO, cleanupDone);
 
             // Catch any cleanup errors
             mv.visitLabel(cleanupCatch);
-            mv.visitInsn(Opcodes.POP);  // Discard cleanup exception
-            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+            mv.visitVarInsn(Opcodes.ASTORE, 11);
+            mv.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "com/hypixel/hytale/logger/HytaleLogger",
+                "getLogger",
+                "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+                false
+            );
+            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+            mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/logger/HytaleLogger",
+                "at",
+                "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                false
+            );
+            mv.visitVarInsn(Opcodes.ALOAD, 11);
+            mv.visitMethodInsn(
+                Opcodes.INVOKEINTERFACE,
+                "com/google/common/flogger/LoggingApi",
+                "withCause",
+                "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+                true
+            );
             mv.visitLdcInsn("[HyzenKernel] Fallback cleanup failed - memory may leak");
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+            mv.visitMethodInsn(
+                Opcodes.INVOKEINTERFACE,
+                "com/google/common/flogger/LoggingApi",
+                "log",
+                "(Ljava/lang/String;)V",
+                true
+            );
 
             mv.visitLabel(cleanupDone);
 

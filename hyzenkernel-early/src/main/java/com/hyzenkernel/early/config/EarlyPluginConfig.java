@@ -38,7 +38,6 @@ public class EarlyPluginConfig {
         public boolean uuidSystem = true;
         public boolean tickingThread = true;
         public boolean universeRemovePlayer = true;
-        public boolean livingEntity = true;
         public boolean worldSpawningSystem = true;
         public boolean staticSharedInstances = true;
         public boolean gamePacketHandler = true;

@@ -41,7 +41,7 @@ public class PortalDeviceSummonSpawnReturnMethodVisitor extends AdviceAdapter {
         );
         mv.visitJumpInsn(Opcodes.IFNULL, continueOriginal);
 
-        // if (!world.getName().startsWith("instance-shared-")) skip
+        // if (!world.getName().startsWith("instance-shared-") && !world.getName().startsWith("instance-Endgame_")) skip
         mv.visitVarInsn(Opcodes.ALOAD, 0);
         mv.visitMethodInsn(
                 Opcodes.INVOKEVIRTUAL,
@@ -58,7 +58,27 @@ public class PortalDeviceSummonSpawnReturnMethodVisitor extends AdviceAdapter {
                 "(Ljava/lang/String;)Z",
                 false
         );
+        Label sharedMatch = new Label();
+        mv.visitJumpInsn(Opcodes.IFNE, sharedMatch);
+
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "com/hypixel/hytale/server/core/universe/world/World",
+                "getName",
+                "()Ljava/lang/String;",
+                false
+        );
+        mv.visitLdcInsn("instance-Endgame_");
+        mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "java/lang/String",
+                "startsWith",
+                "(Ljava/lang/String;)Z",
+                false
+        );
         mv.visitJumpInsn(Opcodes.IFEQ, continueOriginal);
+        mv.visitLabel(sharedMatch);
 
         // if (portalWorld == null) skip
         mv.visitVarInsn(Opcodes.ALOAD, 1);

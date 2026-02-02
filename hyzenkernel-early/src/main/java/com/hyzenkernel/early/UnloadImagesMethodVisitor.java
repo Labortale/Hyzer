@@ -52,14 +52,40 @@ public class UnloadImagesMethodVisitor extends MethodVisitor {
             mv.visitLabel(catchHandler);
             // Stack has the exception on it, we need to handle it
 
-            // Log warning: System.out.println("[HyzenKernel-Early] WARNING: Iterator corruption in WorldMapTracker.unloadImages() - recovered gracefully");
-            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-            mv.visitLdcInsn("[HyzenKernel-Early] WARNING: Iterator corruption in WorldMapTracker.unloadImages() - recovered gracefully (Issue #16)");
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
-
-            // Pop the exception (it's still on the stack)
-            // Actually we consumed it by not using it, but let's be safe
-            // The exception was already consumed by entering the handler
+            // Log warning with stack trace
+            mv.visitInsn(Opcodes.DUP);
+            mv.visitMethodInsn(
+                    Opcodes.INVOKESTATIC,
+                    "com/hypixel/hytale/logger/HytaleLogger",
+                    "getLogger",
+                    "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+                    false
+            );
+            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEVIRTUAL,
+                    "com/hypixel/hytale/logger/HytaleLogger",
+                    "at",
+                    "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                    false
+            );
+            mv.visitInsn(Opcodes.SWAP);
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEINTERFACE,
+                    "com/google/common/flogger/LoggingApi",
+                    "withCause",
+                    "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+                    true
+            );
+            mv.visitLdcInsn("WorldMapTracker.unloadImages() failed - recovered gracefully (Issue #16)");
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEINTERFACE,
+                    "com/google/common/flogger/LoggingApi",
+                    "log",
+                    "(Ljava/lang/String;)V",
+                    true
+            );
+            mv.visitInsn(Opcodes.POP);
 
             // Return normally (void method)
             mv.visitInsn(Opcodes.RETURN);
@@ -74,6 +100,6 @@ public class UnloadImagesMethodVisitor extends MethodVisitor {
     @Override
     public void visitMaxs(int maxStack, int maxLocals) {
         // Increase stack size to accommodate our additions
-        super.visitMaxs(Math.max(maxStack, 2), maxLocals);
+        super.visitMaxs(Math.max(maxStack, 4), maxLocals);
     }
 }

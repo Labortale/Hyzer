@@ -34,23 +34,45 @@ public class GamePacketHandlerLambdaMethodVisitor extends MethodVisitor {
             mv.visitLabel(tryEnd);
             mv.visitLabel(catchHandler);
 
-            // Drop the exception instance
-            mv.visitInsn(Opcodes.POP);
-
-            // EarlyLogger.verbose("GamePacketHandler ClientMovement task failed - skipping");
-            mv.visitLdcInsn("GamePacketHandler ClientMovement task failed - skipping");
+            // Log warning with stack trace
+            mv.visitInsn(Opcodes.DUP);
             mv.visitMethodInsn(
                     Opcodes.INVOKESTATIC,
-                    "com/hyzenkernel/early/EarlyLogger",
-                    "verbose",
-                    "(Ljava/lang/String;)V",
+                    "com/hypixel/hytale/logger/HytaleLogger",
+                    "getLogger",
+                    "()Lcom/hypixel/hytale/logger/HytaleLogger;",
                     false
             );
+            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEVIRTUAL,
+                    "com/hypixel/hytale/logger/HytaleLogger",
+                    "at",
+                    "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                    false
+            );
+            mv.visitInsn(Opcodes.SWAP);
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEINTERFACE,
+                    "com/google/common/flogger/LoggingApi",
+                    "withCause",
+                    "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+                    true
+            );
+            mv.visitLdcInsn("GamePacketHandler ClientMovement task failed - skipping");
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEINTERFACE,
+                    "com/google/common/flogger/LoggingApi",
+                    "log",
+                    "(Ljava/lang/String;)V",
+                    true
+            );
+            mv.visitInsn(Opcodes.POP);
 
             // Return void to continue safely
             mv.visitInsn(Opcodes.RETURN);
         }
 
-        super.visitMaxs(Math.max(maxStack, 2), maxLocals);
+        super.visitMaxs(Math.max(maxStack, 4), maxLocals);
     }
 }

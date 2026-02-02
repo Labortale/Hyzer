@@ -26,7 +26,9 @@ public class SpawnSharedInstanceMethodVisitor extends MethodVisitor {
         target.visitCode();
 
         Label fallback = new Label();
-        Label shared = new Label();
+        Label sharedPortals = new Label();
+        Label sharedEndgame = new Label();
+        Label sharedContinue = new Label();
         Label checkLoadable = new Label();
         Label spawnNew = new Label();
 
@@ -34,20 +36,35 @@ public class SpawnSharedInstanceMethodVisitor extends MethodVisitor {
         target.visitVarInsn(Opcodes.ALOAD, 1);
         target.visitJumpInsn(Opcodes.IFNULL, fallback);
 
-        // if (name.startsWith("Portals_")) goto shared
+        // if (name.startsWith("Portals_")) goto sharedPortals
         target.visitVarInsn(Opcodes.ALOAD, 1);
         target.visitLdcInsn("Portals_");
         target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
-        target.visitJumpInsn(Opcodes.IFNE, shared);
+        target.visitJumpInsn(Opcodes.IFNE, sharedPortals);
 
-        // if (!name.startsWith("Portals")) goto fallback
+        // if (name.startsWith("Portals")) goto sharedPortals
         target.visitVarInsn(Opcodes.ALOAD, 1);
         target.visitLdcInsn("Portals");
         target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
-        target.visitJumpInsn(Opcodes.IFEQ, fallback);
+        target.visitJumpInsn(Opcodes.IFNE, sharedPortals);
 
-        // shared:
-        target.visitLabel(shared);
+        // if (name.startsWith("Endgame_")) goto sharedEndgame
+        target.visitVarInsn(Opcodes.ALOAD, 1);
+        target.visitLdcInsn("Endgame_");
+        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
+        target.visitJumpInsn(Opcodes.IFNE, sharedEndgame);
+
+        // if (name.startsWith("Endgame")) goto sharedEndgame
+        target.visitVarInsn(Opcodes.ALOAD, 1);
+        target.visitLdcInsn("Endgame");
+        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
+        target.visitJumpInsn(Opcodes.IFNE, sharedEndgame);
+
+        // no shared match -> fallback
+        target.visitJumpInsn(Opcodes.GOTO, fallback);
+
+        // sharedPortals:
+        target.visitLabel(sharedPortals);
         // String worldName = "instance-shared-" + InstancesPlugin.safeName(name);
         target.visitLdcInsn("instance-shared-");
         target.visitVarInsn(Opcodes.ALOAD, 1);
@@ -60,6 +77,26 @@ public class SpawnSharedInstanceMethodVisitor extends MethodVisitor {
         );
         target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;", false);
         target.visitVarInsn(Opcodes.ASTORE, 4);
+        target.visitJumpInsn(Opcodes.GOTO, sharedContinue);
+
+        // sharedEndgame:
+        target.visitLabel(sharedEndgame);
+        // String worldName = "instance-" + InstancesPlugin.safeName(name);
+        target.visitLdcInsn("instance-");
+        target.visitVarInsn(Opcodes.ALOAD, 1);
+        target.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "com/hypixel/hytale/builtin/instances/InstancesPlugin",
+                "safeName",
+                "(Ljava/lang/String;)Ljava/lang/String;",
+                false
+        );
+        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;", false);
+        target.visitVarInsn(Opcodes.ASTORE, 4);
+        target.visitJumpInsn(Opcodes.GOTO, sharedContinue);
+
+        // sharedContinue:
+        target.visitLabel(sharedContinue);
 
         // Universe universe = Universe.get();
         target.visitMethodInsn(

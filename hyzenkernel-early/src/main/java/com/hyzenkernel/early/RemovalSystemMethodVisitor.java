@@ -62,7 +62,7 @@ public class RemovalSystemMethodVisitor extends AdviceAdapter {
         mv.visitVarInsn(Opcodes.ALOAD, nameLocal);
         mv.visitJumpInsn(Opcodes.IFNULL, skip);
 
-        // if (!name.startsWith("instance-shared-")) goto skip
+        // if (!name.startsWith("instance-shared-") && !name.startsWith("instance-Endgame_")) goto skip
         mv.visitVarInsn(Opcodes.ALOAD, nameLocal);
         mv.visitLdcInsn("instance-shared-");
         mv.visitMethodInsn(
@@ -72,7 +72,20 @@ public class RemovalSystemMethodVisitor extends AdviceAdapter {
                 "(Ljava/lang/String;)Z",
                 false
         );
+        Label sharedMatch = new Label();
+        mv.visitJumpInsn(Opcodes.IFNE, sharedMatch);
+
+        mv.visitVarInsn(Opcodes.ALOAD, nameLocal);
+        mv.visitLdcInsn("instance-Endgame_");
+        mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "java/lang/String",
+                "startsWith",
+                "(Ljava/lang/String;)Z",
+                false
+        );
         mv.visitJumpInsn(Opcodes.IFEQ, skip);
+        mv.visitLabel(sharedMatch);
 
         // PortalWorld portalWorld = world.getEntityStore().getStore().getResource(PortalWorld.getResourceType());
         mv.visitVarInsn(Opcodes.ALOAD, worldLocal);

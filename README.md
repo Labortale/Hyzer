@@ -259,7 +259,7 @@ Look for these log messages at startup:
 
 ### Early Plugin Loaded
 
-Look for these log messages at startup (25 transformers):
+Look for these log messages at startup (24 transformers):
 ```
 [HyzenKernel-Early] InteractionChain transformation COMPLETE!
 [HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
@@ -283,7 +283,6 @@ Look for these log messages at startup (25 transformers):
 [HyzenKernel-Early] PortalDeviceSummonPage transformation COMPLETE!
 [HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
 [HyzenKernel-Early] WorldSpawningSystem transformation COMPLETE!
-[HyzenKernel-Early] LivingEntity transformation COMPLETE!
 [HyzenKernel-Early] Successfully transformed UUIDSystem.onEntityRemove()
 ```
 

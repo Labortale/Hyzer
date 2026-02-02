@@ -86,10 +86,40 @@ public class ArchetypeChunkVisitor extends ClassVisitor {
                 // Add catch handler
                 mv.visitLabel(catchHandler);
 
-                // Log warning
-                mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-                mv.visitLdcInsn("[HyzenKernel-Early] WARNING: getComponent() IndexOutOfBounds - returning null (stale entity ref)");
-                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+                // Log warning with stack trace
+                mv.visitInsn(Opcodes.DUP);
+                mv.visitMethodInsn(
+                        Opcodes.INVOKESTATIC,
+                        "com/hypixel/hytale/logger/HytaleLogger",
+                        "getLogger",
+                        "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+                        false
+                );
+                mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+                mv.visitMethodInsn(
+                        Opcodes.INVOKEVIRTUAL,
+                        "com/hypixel/hytale/logger/HytaleLogger",
+                        "at",
+                        "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                        false
+                );
+                mv.visitInsn(Opcodes.SWAP);
+                mv.visitMethodInsn(
+                        Opcodes.INVOKEINTERFACE,
+                        "com/google/common/flogger/LoggingApi",
+                        "withCause",
+                        "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+                        true
+                );
+                mv.visitLdcInsn("getComponent() IndexOutOfBounds - returning null (stale entity ref)");
+                mv.visitMethodInsn(
+                        Opcodes.INVOKEINTERFACE,
+                        "com/google/common/flogger/LoggingApi",
+                        "log",
+                        "(Ljava/lang/String;)V",
+                        true
+                );
+                mv.visitInsn(Opcodes.POP);
 
                 // Return null
                 mv.visitInsn(Opcodes.ACONST_NULL);
@@ -107,7 +137,7 @@ public class ArchetypeChunkVisitor extends ClassVisitor {
             mv.visitTryCatchBlock(tryStart, tryEnd, catchHandler, "java/lang/IndexOutOfBoundsException");
 
             // Need extra stack space for exception handling
-            super.visitMaxs(Math.max(maxStack, 2), maxLocals);
+            super.visitMaxs(Math.max(maxStack, 4), maxLocals);
         }
     }
 
@@ -151,10 +181,40 @@ public class ArchetypeChunkVisitor extends ClassVisitor {
                 // Add catch handler
                 mv.visitLabel(catchHandler);
 
-                // Log warning
-                mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-                mv.visitLdcInsn("[HyzenKernel-Early] WARNING: copySerializableEntity() IndexOutOfBounds - skipping (stale entity ref)");
-                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+                // Log warning with stack trace
+                mv.visitInsn(Opcodes.DUP);
+                mv.visitMethodInsn(
+                        Opcodes.INVOKESTATIC,
+                        "com/hypixel/hytale/logger/HytaleLogger",
+                        "getLogger",
+                        "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+                        false
+                );
+                mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+                mv.visitMethodInsn(
+                        Opcodes.INVOKEVIRTUAL,
+                        "com/hypixel/hytale/logger/HytaleLogger",
+                        "at",
+                        "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                        false
+                );
+                mv.visitInsn(Opcodes.SWAP);
+                mv.visitMethodInsn(
+                        Opcodes.INVOKEINTERFACE,
+                        "com/google/common/flogger/LoggingApi",
+                        "withCause",
+                        "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+                        true
+                );
+                mv.visitLdcInsn("copySerializableEntity() IndexOutOfBounds - skipping (stale entity ref)");
+                mv.visitMethodInsn(
+                        Opcodes.INVOKEINTERFACE,
+                        "com/google/common/flogger/LoggingApi",
+                        "log",
+                        "(Ljava/lang/String;)V",
+                        true
+                );
+                mv.visitInsn(Opcodes.POP);
 
                 // Return appropriate default value based on return type
                 emitDefaultReturn(opcode);
@@ -206,7 +266,7 @@ public class ArchetypeChunkVisitor extends ClassVisitor {
             mv.visitTryCatchBlock(tryStart, tryEnd, catchHandler, "java/lang/IndexOutOfBoundsException");
 
             // Need extra stack space for exception handling
-            super.visitMaxs(Math.max(maxStack, 2), maxLocals);
+            super.visitMaxs(Math.max(maxStack, 4), maxLocals);
         }
     }
 }

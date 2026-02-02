@@ -87,6 +87,39 @@ public class SetMemoriesCapacityMethodVisitor extends MethodVisitor {
 
         // catch (IllegalStateException e) { state = Failed; return; }
         mv.visitLabel(catchHandler);
+        // Log warning with stack trace
+        mv.visitInsn(Opcodes.DUP);
+        mv.visitMethodInsn(
+            Opcodes.INVOKESTATIC,
+            "com/hypixel/hytale/logger/HytaleLogger",
+            "getLogger",
+            "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+            false
+        );
+        mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+        mv.visitMethodInsn(
+            Opcodes.INVOKEVIRTUAL,
+            "com/hypixel/hytale/logger/HytaleLogger",
+            "at",
+            "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+            false
+        );
+        mv.visitInsn(Opcodes.SWAP);
+        mv.visitMethodInsn(
+            Opcodes.INVOKEINTERFACE,
+            "com/google/common/flogger/LoggingApi",
+            "withCause",
+            "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+            true
+        );
+        mv.visitLdcInsn("PlayerMemories ComponentType invalid - failing interaction");
+        mv.visitMethodInsn(
+            Opcodes.INVOKEINTERFACE,
+            "com/google/common/flogger/LoggingApi",
+            "log",
+            "(Ljava/lang/String;)V",
+            true
+        );
         mv.visitInsn(Opcodes.POP);
         // context.getState().state = InteractionState.Failed;
         mv.visitVarInsn(Opcodes.ALOAD, 2);  // Load context (parameter 2)
@@ -122,6 +155,6 @@ public class SetMemoriesCapacityMethodVisitor extends MethodVisitor {
     @Override
     public void visitMaxs(int maxStack, int maxLocals) {
         // Increase stack size to accommodate our injected code
-        super.visitMaxs(Math.max(maxStack, 3), maxLocals);
+        super.visitMaxs(Math.max(maxStack, 4), maxLocals);
     }
 }

@@ -37,14 +37,29 @@ public class PickRandomChunkMethodVisitor extends MethodVisitor {
             // Drop the exception instance
             mv.visitInsn(Opcodes.POP);
 
-            // EarlyLogger.verbose("WorldSpawningSystem.pickRandomChunk invalid ref - spawn skipped");
-            mv.visitLdcInsn("WorldSpawningSystem.pickRandomChunk invalid ref - spawn skipped");
+            // HytaleLogger.getLogger().at(Level.FINE).log("WorldSpawningSystem.pickRandomChunk invalid ref - spawn skipped");
             mv.visitMethodInsn(
                     Opcodes.INVOKESTATIC,
-                    "com/hyzenkernel/early/EarlyLogger",
-                    "verbose",
-                    "(Ljava/lang/String;)V",
+                    "com/hypixel/hytale/logger/HytaleLogger",
+                    "getLogger",
+                    "()Lcom/hypixel/hytale/logger/HytaleLogger;",
                     false
+            );
+            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "FINE", "Ljava/util/logging/Level;");
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEVIRTUAL,
+                    "com/hypixel/hytale/logger/HytaleLogger",
+                    "at",
+                    "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+                    false
+            );
+            mv.visitLdcInsn("WorldSpawningSystem.pickRandomChunk invalid ref - spawn skipped");
+            mv.visitMethodInsn(
+                    Opcodes.INVOKEINTERFACE,
+                    "com/hypixel/hytale/logger/HytaleLogger$Api",
+                    "log",
+                    "(Ljava/lang/String;)V",
+                    true
             );
 
             // Return null to skip this spawn job safely
