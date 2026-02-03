@@ -39,11 +39,15 @@ public class ActiveChunkUnloader {
             return;
         }
 
+        // Clean cached state for worlds that no longer exist
+        var worldsByName = Universe.get().getWorlds();
+        outOfRangeSinceByWorld.keySet().removeIf(name -> !worldsByName.containsKey(name));
+
         int baseViewRadius = Math.max(config.maxViewRadius, 1);
         int offset = Math.max(config.chunkUnloader.unloadDistanceOffset, 0);
         int safeRadius = Math.max(baseViewRadius + offset, 2);
 
-        for (World world : Universe.get().getWorlds().values()) {
+        for (World world : worldsByName.values()) {
             world.execute(() -> unloadWorld(world, safeRadius));
         }
     }

@@ -4,6 +4,7 @@ import com.hyzenkernel.HyzenKernel;
 import com.hyzenkernel.config.ConfigManager;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.WorldConfig;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -27,6 +28,7 @@ public class SharedInstancePersistenceSystem extends TickingSystem<ChunkStore> {
     private final HyzenKernel plugin;
     private final Set<String> loggedWorlds = ConcurrentHashMap.newKeySet();
     private boolean loggedOnce = false;
+    private static final int LOGGED_WORLD_CLEANUP_THRESHOLD = 512;
 
     public SharedInstancePersistenceSystem(HyzenKernel plugin) {
         this.plugin = plugin;
@@ -40,8 +42,10 @@ public class SharedInstancePersistenceSystem extends TickingSystem<ChunkStore> {
         }
 
         String worldName = world.getName();
-        if (worldName == null || (!worldName.startsWith(SHARED_PREFIX)
-                && !worldName.startsWith(ENDGAME_PREFIX))) {
+        if (worldName == null) {
+            return;
+        }
+        if (!worldName.startsWith(SHARED_PREFIX) && !worldName.startsWith(ENDGAME_PREFIX)) {
             return;
         }
 
@@ -74,6 +78,11 @@ public class SharedInstancePersistenceSystem extends TickingSystem<ChunkStore> {
                     "[SharedInstancePersistence] Set persistent flags for " + worldName
                 );
             }
+        }
+
+        if (loggedWorlds.size() > LOGGED_WORLD_CLEANUP_THRESHOLD) {
+            var worldsByName = Universe.get().getWorlds();
+            loggedWorlds.removeIf(name -> !worldsByName.containsKey(name));
         }
     }
 }

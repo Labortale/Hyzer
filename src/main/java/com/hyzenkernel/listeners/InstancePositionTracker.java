@@ -6,12 +6,14 @@ import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
 import com.hypixel.hytale.server.core.event.events.player.DrainPlayerFromWorldEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -34,12 +36,16 @@ public class InstancePositionTracker {
 
     private final HyzenKernel plugin;
     private final Map<UUID, SavedPosition> savedPositions = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> savedAt = new ConcurrentHashMap<>();
     private boolean loggedOnce = false;
     private int recoveryCount = 0;
 
     // Event registrations for cleanup
     private EventRegistration<?, ?> drainEventRegistration;
     private EventRegistration<?, ?> addEventRegistration;
+    private EventRegistration<?, ?> removeEventRegistration;
+
+    private static final long POSITION_TTL_MS = TimeUnit.MINUTES.toMillis(60);
 
     public InstancePositionTracker(HyzenKernel plugin) {
         this.plugin = plugin;
@@ -59,6 +65,12 @@ public class InstancePositionTracker {
         addEventRegistration = plugin.getEventRegistry().registerGlobal(
             AddPlayerToWorldEvent.class,
             this::onPlayerAddedToWorld
+        );
+
+        // Cleanup on player removal/disconnect
+        removeEventRegistration = plugin.getEventRegistry().registerGlobal(
+            PlayerDisconnectEvent.class,
+            this::onPlayerRemoved
         );
 
         plugin.getLogger().at(Level.INFO).log(
@@ -129,6 +141,7 @@ public class InstancePositionTracker {
                 event.getTransform()
             );
             savedPositions.put(playerUuid, savedPos);
+            savedAt.put(playerUuid, System.currentTimeMillis());
 
             plugin.getLogger().at(Level.FINE).log(
                 "[InstancePositionTracker] Saved position for " + playerUuid +
@@ -182,6 +195,7 @@ public class InstancePositionTracker {
 
                     // Clean up the saved position
                     savedPositions.remove(playerUuid);
+                    savedAt.remove(playerUuid);
                 } else {
                     plugin.getLogger().at(Level.WARNING).log(
                         "[InstancePositionTracker] Could not find saved world '" +
@@ -193,6 +207,29 @@ public class InstancePositionTracker {
                     "[InstancePositionTracker] Player exiting instance but Hytale's return world is null and no valid saved position available. " +
                     "Instance exit may fail!"
                 );
+            }
+        }
+    }
+
+    private void onPlayerRemoved(PlayerDisconnectEvent event) {
+        if (event == null || event.getPlayerRef() == null) {
+            return;
+        }
+        UUID playerUuid = event.getPlayerRef().getUuid();
+        if (playerUuid == null) {
+            return;
+        }
+        savedPositions.remove(playerUuid);
+        savedAt.remove(playerUuid);
+    }
+
+    private void cleanupExpired() {
+        long now = System.currentTimeMillis();
+        for (Map.Entry<UUID, Long> entry : savedAt.entrySet()) {
+            if (now - entry.getValue() > POSITION_TTL_MS) {
+                UUID uuid = entry.getKey();
+                savedAt.remove(uuid);
+                savedPositions.remove(uuid);
             }
         }
     }
@@ -210,7 +247,11 @@ public class InstancePositionTracker {
 
             // Try to get UUID through reflection - Holder implementations vary
             var method = holder.getClass().getMethod("getUuid");
-            return (UUID) method.invoke(holder);
+            UUID uuid = (UUID) method.invoke(holder);
+            if (uuid != null) {
+                cleanupExpired();
+            }
+            return uuid;
         } catch (Exception e) {
             plugin.getLogger().at(Level.FINE).log(
                 "[InstancePositionTracker] Could not get UUID from holder: " + e.getMessage()

@@ -130,7 +130,9 @@ public class RemovalSystemTickMethodVisitor extends MethodVisitor {
                 "(Ljava/lang/String;)Z",
                 false
         );
-        target.visitJumpInsn(Opcodes.IFEQ, notShared);
+        target.visitJumpInsn(Opcodes.IFNE, sharedMatch);
+
+        target.visitJumpInsn(Opcodes.GOTO, notShared);
         target.visitLabel(sharedMatch);
 
         // PortalWorld portalWorld = world.getEntityStore().getStore().getResource(PortalWorld.getResourceType());

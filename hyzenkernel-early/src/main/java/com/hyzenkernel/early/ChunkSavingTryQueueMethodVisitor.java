@@ -137,7 +137,7 @@ public class ChunkSavingTryQueueMethodVisitor extends MethodVisitor {
         );
         target.visitJumpInsn(Opcodes.IFNE, skipSave);
 
-        // if (!worldName.startsWith("instance-Endgame_")) goto doSave
+        // if (worldName.startsWith("instance-Endgame_")) goto skipSave
         target.visitVarInsn(Opcodes.ALOAD, 5);
         target.visitLdcInsn("instance-Endgame_");
         target.visitMethodInsn(
@@ -147,7 +147,9 @@ public class ChunkSavingTryQueueMethodVisitor extends MethodVisitor {
                 "(Ljava/lang/String;)Z",
                 false
         );
-        target.visitJumpInsn(Opcodes.IFEQ, doSave);
+        target.visitJumpInsn(Opcodes.IFNE, skipSave);
+
+        target.visitJumpInsn(Opcodes.GOTO, doSave);
 
         // skipSave:
         target.visitLabel(skipSave);

@@ -35,6 +35,30 @@ public class WorldExecuteMethodVisitor extends MethodVisitor {
         target.visitFieldInsn(Opcodes.GETFIELD, className, "acceptingTasks", "Ljava/util/concurrent/atomic/AtomicBoolean;");
         target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/concurrent/atomic/AtomicBoolean", "get", "()Z", false);
         target.visitJumpInsn(Opcodes.IFNE, acceptTasks);
+        // Log dropped task for diagnostics
+        target.visitMethodInsn(
+            Opcodes.INVOKESTATIC,
+            "com/hypixel/hytale/logger/HytaleLogger",
+            "getLogger",
+            "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+            false
+        );
+        target.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+        target.visitMethodInsn(
+            Opcodes.INVOKEVIRTUAL,
+            "com/hypixel/hytale/logger/HytaleLogger",
+            "at",
+            "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+            false
+        );
+        target.visitLdcInsn("[HyzenKernel] World.execute dropped task because acceptingTasks=false");
+        target.visitMethodInsn(
+            Opcodes.INVOKEINTERFACE,
+            "com/google/common/flogger/LoggingApi",
+            "log",
+            "(Ljava/lang/String;)V",
+            true
+        );
         target.visitInsn(Opcodes.RETURN);
 
         // this.taskQueue.offer(command);
@@ -46,7 +70,7 @@ public class WorldExecuteMethodVisitor extends MethodVisitor {
         target.visitInsn(Opcodes.POP);
         target.visitInsn(Opcodes.RETURN);
 
-        target.visitMaxs(6, 2);
+        target.visitMaxs(8, 2);
         target.visitEnd();
     }
 

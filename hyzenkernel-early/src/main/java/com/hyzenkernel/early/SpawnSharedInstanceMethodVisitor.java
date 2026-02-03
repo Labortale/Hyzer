@@ -60,6 +60,18 @@ public class SpawnSharedInstanceMethodVisitor extends MethodVisitor {
         target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
         target.visitJumpInsn(Opcodes.IFNE, sharedEndgame);
 
+        // if (name.startsWith("endgame_")) goto sharedEndgame
+        target.visitVarInsn(Opcodes.ALOAD, 1);
+        target.visitLdcInsn("endgame_");
+        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
+        target.visitJumpInsn(Opcodes.IFNE, sharedEndgame);
+
+        // if (name.startsWith("endgame")) goto sharedEndgame
+        target.visitVarInsn(Opcodes.ALOAD, 1);
+        target.visitLdcInsn("endgame");
+        target.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false);
+        target.visitJumpInsn(Opcodes.IFNE, sharedEndgame);
+
         // no shared match -> fallback
         target.visitJumpInsn(Opcodes.GOTO, fallback);
 

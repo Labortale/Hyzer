@@ -26,7 +26,7 @@ import java.util.logging.Level;
  */
 public class SharedInstanceBootUnloader {
     private static final String SHARED_PREFIX = "instance-shared-";
-    private static final String ENDGAME_PREFIX = "instance-endgame_";
+    private static final String ENDGAME_PREFIX = "instance-Endgame_";
     private static final long UNLOAD_DELAY_MS = 1000L;
 
     private final HyzenKernel plugin;
@@ -84,8 +84,7 @@ public class SharedInstanceBootUnloader {
             if (worldName == null) {
                 continue;
             }
-            String worldNameLower = worldName.toLowerCase();
-            if (!worldNameLower.startsWith(SHARED_PREFIX) && !worldNameLower.startsWith(ENDGAME_PREFIX)) {
+            if (!worldName.startsWith(SHARED_PREFIX) && !worldName.startsWith(ENDGAME_PREFIX)) {
                 continue;
             }
             if (world.getPlayerCount() > 0) {

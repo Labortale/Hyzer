@@ -84,7 +84,9 @@ public class RemovalSystemMethodVisitor extends AdviceAdapter {
                 "(Ljava/lang/String;)Z",
                 false
         );
-        mv.visitJumpInsn(Opcodes.IFEQ, skip);
+        mv.visitJumpInsn(Opcodes.IFNE, sharedMatch);
+        mv.visitJumpInsn(Opcodes.GOTO, skip);
+
         mv.visitLabel(sharedMatch);
 
         // PortalWorld portalWorld = world.getEntityStore().getStore().getResource(PortalWorld.getResourceType());

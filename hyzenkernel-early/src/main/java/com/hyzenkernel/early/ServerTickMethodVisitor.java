@@ -112,6 +112,39 @@ public class ServerTickMethodVisitor extends MethodVisitor {
         // Issue #51: Must use cancelChains() to properly notify client, not just remove from map!
         mv.visitLabel(isTimeoutException);
 
+        // Log the timeout exception for diagnostics
+        mv.visitMethodInsn(
+            Opcodes.INVOKESTATIC,
+            "com/hypixel/hytale/logger/HytaleLogger",
+            "getLogger",
+            "()Lcom/hypixel/hytale/logger/HytaleLogger;",
+            false
+        );
+        mv.visitFieldInsn(Opcodes.GETSTATIC, "java/util/logging/Level", "WARNING", "Ljava/util/logging/Level;");
+        mv.visitMethodInsn(
+            Opcodes.INVOKEVIRTUAL,
+            "com/hypixel/hytale/logger/HytaleLogger",
+            "at",
+            "(Ljava/util/logging/Level;)Lcom/hypixel/hytale/logger/HytaleLogger$Api;",
+            false
+        );
+        mv.visitVarInsn(Opcodes.ALOAD, EXCEPTION_LOCAL);
+        mv.visitMethodInsn(
+            Opcodes.INVOKEINTERFACE,
+            "com/google/common/flogger/LoggingApi",
+            "withCause",
+            "(Ljava/lang/Throwable;)Lcom/google/common/flogger/LoggingApi;",
+            true
+        );
+        mv.visitLdcInsn("[HyzenKernel] InteractionManager timeout exception - cancelling chain");
+        mv.visitMethodInsn(
+            Opcodes.INVOKEINTERFACE,
+            "com/google/common/flogger/LoggingApi",
+            "log",
+            "(Ljava/lang/String;)V",
+            true
+        );
+
         // === PROPERLY CANCEL THE CHAIN ===
         // Method params: this=0 (InteractionManager), entityRef=1, chain=2, currentTick=3-4
         // Call: this.cancelChains(chain) - this notifies the client and cleans up properly

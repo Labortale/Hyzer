@@ -3,6 +3,7 @@ package com.hyzenkernel.optimization;
 import com.hyzenkernel.config.HyzenKernelConfig;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
+import com.hypixel.hytale.server.core.universe.Universe;
 
 public class ViewRadiusAdjuster {
 
@@ -23,6 +24,9 @@ public class ViewRadiusAdjuster {
         if (config.tps == null || !config.tps.enabled) {
             return;
         }
+        if (Universe.get().getPlayerCount() <= 0) {
+            return;
+        }
 
         double currentTps = TpsMonitor.getLowestWorldTps();
         int currentRadius = HytaleServer.get().getConfig().getMaxViewRadius();
@@ -32,19 +36,19 @@ public class ViewRadiusAdjuster {
         if (currentTps < config.tps.lowTpsThreshold) {
             if (currentRadius > minRadius) {
                 int newRadius = Math.max(minRadius, currentRadius - 1);
-                applyViewRadius(newRadius, "TPS bajo detectado (" + String.format("%.2f", currentTps) + "). Reduciendo vision.");
+                applyViewRadius(newRadius, "Low TPS detected (" + String.format("%.2f", currentTps) + "). Reducing view radius.");
             }
         } else if (currentTps > config.tps.recoveryTpsThreshold) {
             if (currentRadius < maxRadius && currentRadius < initialViewRadius) {
                 int newRadius = Math.min(initialViewRadius, currentRadius + 1);
-                applyViewRadius(newRadius, "TPS estable (" + String.format("%.2f", currentTps) + "). Aumentando vision.");
+                applyViewRadius(newRadius, "TPS stable (" + String.format("%.2f", currentTps) + "). Increasing view radius.");
             }
         }
     }
 
     private void applyViewRadius(int radius, String reason) {
         HytaleServer.get().getConfig().setMaxViewRadius(radius);
-        logger.atWarning().log("%s Nuevo radio: %d chunks.", reason, radius);
+        logger.atWarning().log("%s New radius: %d chunks.", reason, radius);
     }
 
     public void restore() {

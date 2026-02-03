@@ -77,7 +77,8 @@ public class PortalDeviceSummonSpawnReturnMethodVisitor extends AdviceAdapter {
                 "(Ljava/lang/String;)Z",
                 false
         );
-        mv.visitJumpInsn(Opcodes.IFEQ, continueOriginal);
+        mv.visitJumpInsn(Opcodes.IFNE, sharedMatch);
+        mv.visitJumpInsn(Opcodes.GOTO, continueOriginal);
         mv.visitLabel(sharedMatch);
 
         // if (portalWorld == null) skip
