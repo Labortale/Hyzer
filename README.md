@@ -1,19 +1,19 @@
-# HyzenKernel
+# Hyzer
 
 Essential bug fixes for Hytale Early Access servers. Prevents crashes, player kicks, and desync issues caused by known bugs in Hytale's core systems.
 
-HyzenKernel is a fork of HyFixes for Hyzen.net (A Hytale server), improved, cleaner, more organized, and optimized. Credits: https://github.com/John-Willikers/hyfixes
+Hyzer is a fork of HyFixes for Hyzen.net (A Hytale server), improved, cleaner, more organized, and optimized. Credits: https://github.com/John-Willikers/hyfixes
 
 ---
 
 ## Two Plugins, One Solution
 
-HyzenKernel consists of **two complementary plugins** that work together to fix different types of bugs:
+Hyzer consists of **two complementary plugins** that work together to fix different types of bugs:
 
 | Plugin | File | Purpose |
 |--------|------|---------|
-| **Runtime Plugin** | `hyzenkernel-X.X.X.jar` | Fixes bugs at runtime using sanitizers and event hooks |
-| **Early Plugin** | `hyzenkernel-early-X.X.X.jar` | Fixes deep core bugs via bytecode transformation at class load |
+| **Runtime Plugin** | `Hyzer-X.X.X.jar` | Fixes bugs at runtime using sanitizers and event hooks |
+| **Early Plugin** | `Hyzer-early-X.X.X.jar` | Fixes deep core bugs via bytecode transformation at class load |
 
 ### Why Two Plugins?
 
@@ -25,13 +25,13 @@ Some Hytale bugs occur in code paths that cannot be intercepted at runtime. The 
 
 ### Runtime Plugin (Required)
 
-1. Download `hyzenkernel-X.X.X.jar` from [Releases](https://github.com/DuvyDev/HyzenKernel/releases)
+1. Download `Hyzer-X.X.X.jar` from [Releases](https://github.com/Labortale/Hyzer/releases)
 2. Place in your server's `mods/` directory
 3. Restart the server
 
 ### Early Plugin (Recommended)
 
-1. Download `hyzenkernel-early-X.X.X.jar` from [Releases](https://github.com/DuvyDev/HyzenKernel/releases)
+1. Download `Hyzer-early-X.X.X.jar` from [Releases](https://github.com/Labortale/Hyzer/releases)
 2. Place in your server's `earlyplugins/` directory
 3. Start the server with early plugins enabled:
    - Set `ACCEPT_EARLY_PLUGINS=1` environment variable, OR
@@ -155,8 +155,8 @@ if (adjustedIndex < 0) {
 
 ### Optimization (Runtime Plugin)
 
-HyzenKernel includes optional performance optimizations that can replace third-party plugins.
-All options live under `optimization` in `mods/hyzenkernel/config.json`.
+Hyzer includes optional performance optimizations that can replace third-party plugins.
+All options live under `optimization` in `mods/Hyzer/config.json`.
 
 **Features**
 - FluidFixer: disables FluidPlugin pre-process on new chunks to avoid long generation stalls.
@@ -231,7 +231,7 @@ To disable the static shared instance system and revert to vanilla behavior, set
 Note: if you already created `instance-shared-*` worlds, they will remain on disk.
 To fully return to vanilla instance behavior, delete those folders under your server `worlds/` directory.
 
-Boot behavior: after all worlds finish loading, HyzenKernel will automatically unload any
+Boot behavior: after all worlds finish loading, Hyzer will automatically unload any
 `instance-shared-*` worlds that have zero players. This prevents them from counting toward
 the portal fragment limit on a fresh server boot while keeping the terrain persistent on disk.
 
@@ -239,7 +239,7 @@ the portal fragment limit on a fresh server boot while keeping the terrain persi
 
 | Command | Aliases | Description |
 |---------|---------|-------------|
-| `/interactionstatus` | `/hyfixstatus`, `/hfs` | Show HyzenKernel statistics and status |
+| `/interactionstatus` | `/hyfixstatus`, `/hfs` | Show Hyzer statistics and status |
 | `/cleaninteractions` | `/ci`, `/cleanint`, `/fixinteractions` | Scan/remove orphaned interaction zones |
 | `/cleanwarps` | `/cw`, `/fixwarps`, `/warpclean` | Scan/remove orphaned warp entries |
 | `/fixcounter` | `/fc`, `/blockcounter`, `/teleporterlimit` | Fix/view teleporter BlockCounter values |
@@ -253,47 +253,47 @@ the portal fragment limit on a fresh server boot while keeping the terrain persi
 
 Look for these log messages at startup:
 ```
-[HyzenKernel] Plugin enabled - HyzenKernel vX.X.X
-[HyzenKernel] [PickupItemSanitizer] Active - monitoring for corrupted pickup items
+[Hyzer] Plugin enabled - Hyzer vX.X.X
+[Hyzer] [PickupItemSanitizer] Active - monitoring for corrupted pickup items
 ```
 
 ### Early Plugin Loaded
 
 Look for these log messages at startup (24 transformers):
 ```
-[HyzenKernel-Early] InteractionChain transformation COMPLETE!
-[HyzenKernel-Early] ArchetypeChunk transformation COMPLETE!
-[HyzenKernel-Early] BlockComponentChunk transformation COMPLETE!
-[HyzenKernel-Early] BlockHealthSystem transformation COMPLETE!
-[HyzenKernel-Early] CommandBuffer transformation COMPLETE!
-[HyzenKernel-Early] InteractionManager transformation COMPLETE!
-[HyzenKernel-Early] PacketHandler transformation COMPLETE!
-[HyzenKernel-Early] GamePacketHandler transformation COMPLETE!
-[HyzenKernel-Early] PrefabLoader transformation COMPLETE!
-[HyzenKernel-Early] SetMemoriesCapacityInteraction transformation COMPLETE!
-[HyzenKernel-Early] SpawnMarkerSystems transformation COMPLETE!
-[HyzenKernel-Early] SpawnReferenceSystems transformation COMPLETE!
-[HyzenKernel-Early] TickingThread transformation COMPLETE!
-[HyzenKernel-Early] Universe transformation COMPLETE!
-[HyzenKernel-Early] World transformation COMPLETE!
-[HyzenKernel-Early] InstancesPlugin transformation COMPLETE!
-[HyzenKernel-Early] ChunkSavingSystems transformation COMPLETE!
-[HyzenKernel-Early] WorldConfig SpawnProvider transformation COMPLETE!
-[HyzenKernel-Early] RemovalSystem transformation COMPLETE!
-[HyzenKernel-Early] PortalDeviceSummonPage transformation COMPLETE!
-[HyzenKernel-Early] WorldMapTracker transformation COMPLETE!
-[HyzenKernel-Early] WorldSpawningSystem transformation COMPLETE!
-[HyzenKernel-Early] Successfully transformed UUIDSystem.onEntityRemove()
+[Hyzer-Early] InteractionChain transformation COMPLETE!
+[Hyzer-Early] ArchetypeChunk transformation COMPLETE!
+[Hyzer-Early] BlockComponentChunk transformation COMPLETE!
+[Hyzer-Early] BlockHealthSystem transformation COMPLETE!
+[Hyzer-Early] CommandBuffer transformation COMPLETE!
+[Hyzer-Early] InteractionManager transformation COMPLETE!
+[Hyzer-Early] PacketHandler transformation COMPLETE!
+[Hyzer-Early] GamePacketHandler transformation COMPLETE!
+[Hyzer-Early] PrefabLoader transformation COMPLETE!
+[Hyzer-Early] SetMemoriesCapacityInteraction transformation COMPLETE!
+[Hyzer-Early] SpawnMarkerSystems transformation COMPLETE!
+[Hyzer-Early] SpawnReferenceSystems transformation COMPLETE!
+[Hyzer-Early] TickingThread transformation COMPLETE!
+[Hyzer-Early] Universe transformation COMPLETE!
+[Hyzer-Early] World transformation COMPLETE!
+[Hyzer-Early] InstancesPlugin transformation COMPLETE!
+[Hyzer-Early] ChunkSavingSystems transformation COMPLETE!
+[Hyzer-Early] WorldConfig SpawnProvider transformation COMPLETE!
+[Hyzer-Early] RemovalSystem transformation COMPLETE!
+[Hyzer-Early] PortalDeviceSummonPage transformation COMPLETE!
+[Hyzer-Early] WorldMapTracker transformation COMPLETE!
+[Hyzer-Early] WorldSpawningSystem transformation COMPLETE!
+[Hyzer-Early] Successfully transformed UUIDSystem.onEntityRemove()
 ```
 
 ---
 
 ## Support
 
-**Found a bug?** Please report it on [GitHub Issues](https://github.com/DuvyDev/HyzenKernel/issues) with:
+**Found a bug?** Please report it on [GitHub Issues](https://github.com/Labortale/Hyzer/issues) with:
 - Server logs showing the error
 - Steps to reproduce (if known)
-- HyzenKernel version
+- Hyzer version
 
 ---
 
@@ -303,8 +303,8 @@ Requires Java 25 and access to `HytaleServer.jar`.
 
 ```bash
 # Clone the repo
-git clone https://github.com/DuvyDev/HyzenKernel.git
-cd Kernel
+git clone https://github.com/Labortale/Hyzer.git
+cd Hyzer
 
 # Place HytaleServer.jar in libs/ directory
 mkdir -p libs
@@ -312,12 +312,12 @@ cp /path/to/HytaleServer.jar libs/
 
 # Build runtime plugin
 ./gradlew build
-# Output: build/libs/hyzenkernel.jar
+# Output: build/libs/Hyzer.jar
 
 # Build early plugin
-cd hyzenkernel-early
+cd Hyzer-early
 ./gradlew build
-# Output: build/libs/hyzenkernel-early-1.0.0.jar
+# Output: build/libs/Hyzer-early-1.0.0.jar
 ```
 
 ---

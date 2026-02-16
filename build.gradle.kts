@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "9.3.1"
 }
 
-group = "com.hyzenkernel"
+group = "com.hyzer"
 // Version is set in manifest.json - don't let gradle override it
 val projectVersion = "1.1.12"
 version = projectVersion
@@ -52,7 +52,7 @@ tasks.jar {
         attributes(
             "Implementation-Title" to project.name,
             "Implementation-Version" to project.version,
-            "Plugin-Class" to "com.hyzenkernel.HyzenKernel"
+            "Plugin-Class" to "com.hyzer.Hyzer"
         )
     }
 }
@@ -67,7 +67,7 @@ tasks.shadowJar {
         attributes(
             "Implementation-Title" to project.name,
             "Implementation-Version" to project.version,
-            "Plugin-Class" to "com.hyzenkernel.HyzenKernel"
+            "Plugin-Class" to "com.hyzer.Hyzer"
         )
     }
 

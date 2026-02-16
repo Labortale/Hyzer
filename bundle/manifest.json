@@ -1,6 +1,6 @@
 {
-  "Group": "com.hyzenkernel",
-  "Name": "HyzenKernel",
+  "Group": "com.hyzer",
+  "Name": "Hyzer",
   "Version": "1.1.12",
   "Description": "Essential bug fixes for Hytale Early Access servers. Includes runtime plugin and early plugin bytecode transformers. Prevents crashes, player kicks, combat desync, and sync issues.",
   "Authors": [
@@ -9,19 +9,19 @@
       "Url": "https://github.com/HyzenNet"
     }
   ],
-  "Website": "https://github.com/DuvyDev/HyzenKernel",
+  "Website": "https://github.com/Labortale/Hyzer",
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {},
   "DisabledByDefault": false,
   "IncludesAssetPack": false,
   "SubPlugins": {
-    "com.hyzenkernel:HyzenKernel-Runtime": {
-      "Path": "mods/hyzenkernel-1.1.12.jar",
+    "com.hyzer:Hyzer-Runtime": {
+      "Path": "mods/hyzer-1.1.12.jar",
       "Description": "Runtime plugin - Place in mods/ folder"
     },
-    "com.hyzenkernel:HyzenKernel-Early": {
-      "Path": "earlyplugins/hyzenkernel-early-1.1.12.jar",
+    "com.hyzer:Hyzer-Early": {
+      "Path": "earlyplugins/hyzer-early-1.1.12.jar",
       "Description": "Early plugin bytecode transformers - Place in earlyplugins/ folder"
     }
   }

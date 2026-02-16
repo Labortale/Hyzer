@@ -1,5 +1,5 @@
 #!/bin/bash
-# HyzenKernel Bundle Builder
+# Hyzer Bundle Builder
 # Creates a CurseForge-compatible bundle.zip
 #
 # Usage:
@@ -29,16 +29,16 @@ else
 fi
 
 BUNDLE_DIR="bundle"
-OUTPUT_ZIP="hyzenkernel-bundle-${VERSION}.zip"
+OUTPUT_ZIP="hyzer-bundle-${VERSION}.zip"
 
 echo "========================================"
-echo "  HyzenKernel Bundle Builder"
+echo "  Hyzer Bundle Builder"
 echo "  Version: ${VERSION}"
 echo "========================================"
 
 # Clean previous bundle
 echo "[1/7] Cleaning previous bundle..."
-rm -rf "${BUNDLE_DIR}/mods" "${BUNDLE_DIR}/earlyplugins" hyzenkernel-bundle-*.zip
+rm -rf "${BUNDLE_DIR}/mods" "${BUNDLE_DIR}/earlyplugins" hyzer-bundle-*.zip
 mkdir -p "${BUNDLE_DIR}/mods" "${BUNDLE_DIR}/earlyplugins"
 
 # Update bundle manifest version
@@ -48,16 +48,16 @@ sed -i "s/\"Version\": \"[^\"]*\"/\"Version\": \"${VERSION}\"/" "${BUNDLE_DIR}/m
 # Build runtime plugin (passes version to Gradle)
 echo "[3/7] Building runtime plugin..."
 ./gradlew build -Pversion="${VERSION}" --quiet
-cp build/libs/hyzenkernel.jar "${BUNDLE_DIR}/mods/hyzenkernel-${VERSION}.jar"
-echo "       -> mods/hyzenkernel-${VERSION}.jar"
+cp build/libs/hyzer.jar "${BUNDLE_DIR}/mods/hyzer-${VERSION}.jar"
+echo "       -> mods/hyzer-${VERSION}.jar"
 
 # Build early plugin (passes version to Gradle)
 echo "[4/7] Building early plugin..."
-cd hyzenkernel-early
+cd hyzer-early
 ./gradlew build -Pversion="${VERSION}" --quiet
 cd ..
-cp hyzenkernel-early/build/libs/hyzenkernel-early.jar "${BUNDLE_DIR}/earlyplugins/hyzenkernel-early-${VERSION}.jar"
-echo "       -> earlyplugins/hyzenkernel-early-${VERSION}.jar"
+cp hyzer-early/build/libs/hyzer-early.jar "${BUNDLE_DIR}/earlyplugins/hyzer-early-${VERSION}.jar"
+echo "       -> earlyplugins/hyzer-early-${VERSION}.jar"
 
 # Copy README
 echo "[5/7] Adding documentation..."
@@ -66,8 +66,8 @@ cp CURSEFORGE.md "${BUNDLE_DIR}/README.md"
 # Verify versions match
 echo "[6/7] Verifying version consistency..."
 echo "  Bundle manifest: $(grep -o '"Version": "[^"]*"' "${BUNDLE_DIR}/manifest.json")"
-echo "  Runtime manifest: $(unzip -p build/libs/hyzenkernel.jar manifest.json 2>/dev/null | grep -o '"Version": "[^"]*"' || echo 'N/A')"
-echo "  Early manifest: $(unzip -p hyzenkernel-early/build/libs/hyzenkernel-early.jar manifest.json 2>/dev/null | grep -o '"Version": "[^"]*"' || echo 'N/A')"
+echo "  Runtime manifest: $(unzip -p build/libs/hyzer.jar manifest.json 2>/dev/null | grep -o '"Version": "[^"]*"' || echo 'N/A')"
+echo "  Early manifest: $(unzip -p hyzer-early/build/libs/hyzer-early.jar manifest.json 2>/dev/null | grep -o '"Version": "[^"]*"' || echo 'N/A')"
 
 # Create ZIP
 echo "[7/7] Creating bundle ZIP..."

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    HyzenKernel Bundle Builder (Windows Version)
+    Hyzer Bundle Builder (Windows Version)
     Creates a CurseForge-compatible bundle.zip
 
 .DESCRIPTION
@@ -85,17 +85,17 @@ if ($Version -ne $CurrentVersion -or $true) { # Always run updates to ensure con
     # Update src/main/resources/manifest.json
     Update-FileContent "src/main/resources/manifest.json" '"Version":\s*"[^"]*"' "`"Version`": `"$Version`""
     
-    # Update hyzenkernel-early/build.gradle.kts (if it has hardcoded version or just rely on -P)
+    # Update hyzer-early/build.gradle.kts (if it has hardcoded version or just rely on -P)
     # The user mentioned hardcoded version in "various places", checking early plugin just in case
     # Taking a safe approach: we will pass -Pversion to gradle anyway, but let's see if we can update specific files if needed.
-    # Based on previous read, hyzenkernel-early/build.gradle.kts uses 'findProperty("version")', so no need to edit file there.
+    # Based on previous read, hyzer-early/build.gradle.kts uses 'findProperty("version")', so no need to edit file there.
 }
 
 $BundleDir = Join-Path $PSScriptRoot "bundle"
-$OutputZip = "hyzenkernel-bundle-${Version}.zip"
+$OutputZip = "hyzer-bundle-${Version}.zip"
 
 Write-Host "========================================"
-Write-Host "  HyzenKernel Bundle Builder"
+Write-Host "  Hyzer Bundle Builder"
 Write-Host "  Version: ${Version}"
 Write-Host "========================================"
 
@@ -103,7 +103,7 @@ Write-Host "========================================"
 Write-Host "[1/7] Cleaning previous bundle..."
 if (Test-Path "$BundleDir\mods") { Remove-Item "$BundleDir\mods" -Recurse -Force }
 if (Test-Path "$BundleDir\earlyplugins") { Remove-Item "$BundleDir\earlyplugins" -Recurse -Force }
-Get-ChildItem -Path $PSScriptRoot -Filter "hyzenkernel-bundle-*.zip" | Remove-Item -Force
+Get-ChildItem -Path $PSScriptRoot -Filter "hyzer-bundle-*.zip" | Remove-Item -Force
 
 New-Item -Path "$BundleDir\mods" -ItemType Directory -Force | Out-Null
 New-Item -Path "$BundleDir\earlyplugins" -ItemType Directory -Force | Out-Null
@@ -146,12 +146,12 @@ if (Test-Path $ManifestPath) {
         $ManifestContent = $ManifestContent -replace '"Version":\s*"[^"]*"', "`"Version`": `"$Version`""
         
         # Update Runtime Plugin Path
-        # Replaces mods/hyzenkernel-X.X.X.jar with new version
-        $ManifestContent = $ManifestContent -replace 'mods/hyzenkernel-[\w\.-]+\.jar', "mods/hyzenkernel-${Version}.jar"
+        # Replaces mods/hyzer-X.X.X.jar with new version
+        $ManifestContent = $ManifestContent -replace 'mods/hyzer-[\w\.-]+\.jar', "mods/hyzer-${Version}.jar"
         
         # Update Early Plugin Path
-        # Replaces earlyplugins/hyzenkernel-early-X.X.X.jar with new version
-        $ManifestContent = $ManifestContent -replace 'earlyplugins/hyzenkernel-early-[\w\.-]+\.jar', "earlyplugins/hyzenkernel-early-${Version}.jar"
+        # Replaces earlyplugins/hyzer-early-X.X.X.jar with new version
+        $ManifestContent = $ManifestContent -replace 'earlyplugins/hyzer-early-[\w\.-]+\.jar', "earlyplugins/hyzer-early-${Version}.jar"
 
         $ManifestContent | Set-Content $ManifestPath
         Write-Host "Updated bundle manifest version to $Version and adjusted paths (preserved formatting)."
@@ -163,29 +163,29 @@ if (Test-Path $ManifestPath) {
     # Create a default if missing with nice formatting
     $DefaultContent = @"
 {
-  "Group": "com.hyzenkernel",
-  "Name": "HyzenKernel",
+  "Group": "com.hyzer",
+  "Name": "Hyzer",
   "Version": "$Version",
   "Description": "Essential bug fixes for Hytale Early Access servers. Includes runtime plugin and early plugin bytecode transformers. Prevents crashes, player kicks, combat desync, and sync issues.",
   "Authors": [
     {
       "Name": "HyzenNet",
-      "Url": "https://github.com/HyzenNet"
+      "Url": "https://github.com/DuvyDev/Hyzenkernel"
     }
   ],
-  "Website": "https://github.com/DuvyDev/HyzenKernel",
+  "Website": "https://github.com/Labortale/Hyzer",
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {},
   "DisabledByDefault": false,
   "IncludesAssetPack": false,
   "SubPlugins": {
-    "com.hyzenkernel:HyzenKernel-Runtime": {
-      "Path": "mods/hyzenkernel-${Version}.jar",
+    "com.hyzer:Hyzer-Runtime": {
+      "Path": "mods/hyzer-${Version}.jar",
       "Description": "Runtime plugin - Place in mods/ folder"
     },
-    "com.hyzenkernel:HyzenKernel-Early": {
-      "Path": "earlyplugins/hyzenkernel-early-${Version}.jar",
+    "com.hyzer:Hyzer-Early": {
+      "Path": "earlyplugins/hyzer-early-${Version}.jar",
       "Description": "Early plugin bytecode transformers - Place in earlyplugins/ folder"
     }
   }
@@ -197,35 +197,35 @@ if (Test-Path $ManifestPath) {
 # Check if gradlew.bat exists
 if (Test-Path ".\gradlew.bat") {
     # Run clean build for both projects using the root wrapper (which is newer/correct)
-    # We build :clean, :build (shadowJar) and :hyzenkernel-early:build
+    # We build :clean, :build (shadowJar) and :hyzer-early:build
     Write-Host "Running Gradle build..."
-    cmd.exe /c "gradlew.bat clean shadowJar :hyzenkernel-early:build -Pversion=${Version} --quiet"
+    cmd.exe /c "gradlew.bat clean shadowJar :hyzer-early:build -Pversion=${Version} --quiet"
 } else {
     Write-Error "gradlew.bat not found!"
 }
 
 # Find the built runtime jar
 Write-Host "Collecting artifacts..."
-$RuntimeJar = Get-ChildItem "build\libs\hyzenkernel-*.jar" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$RuntimeJar = Get-ChildItem "build\libs\hyzer-*.jar" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if ($RuntimeJar) {
-    Copy-Item $RuntimeJar.FullName "$BundleDir\mods\hyzenkernel-${Version}.jar"
-    Write-Host "       -> mods/hyzenkernel-${Version}.jar (Source: $($RuntimeJar.Name))"
-} elseif (Test-Path "build\libs\hyzenkernel.jar") {
-    Copy-Item "build\libs\hyzenkernel.jar" "$BundleDir\mods\hyzenkernel-${Version}.jar"
-    Write-Host "       -> mods/hyzenkernel-${Version}.jar"
+    Copy-Item $RuntimeJar.FullName "$BundleDir\mods\hyzer-${Version}.jar"
+    Write-Host "       -> mods/hyzer-${Version}.jar (Source: $($RuntimeJar.Name))"
+} elseif (Test-Path "build\libs\hyzer.jar") {
+    Copy-Item "build\libs\hyzer.jar" "$BundleDir\mods\hyzer-${Version}.jar"
+    Write-Host "       -> mods/hyzer-${Version}.jar"
 } else {
     Write-Error "Failed to build runtime jar. No jar found in build\libs matching pattern."
 }
 
 # Find early jar (in subproject build folder)
-$EarlyJar = Get-ChildItem "hyzenkernel-early\build\libs\hyzenkernel-early-*.jar" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$EarlyJar = Get-ChildItem "hyzer-early\build\libs\hyzer-early-*.jar" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
 if ($EarlyJar) {
-    Copy-Item $EarlyJar.FullName "$BundleDir\earlyplugins\hyzenkernel-early-${Version}.jar"
-    Write-Host "       -> earlyplugins/hyzenkernel-early-${Version}.jar (Source: $($EarlyJar.Name))"
-} elseif (Test-Path "hyzenkernel-early\build\libs\hyzenkernel-early.jar") {
-    Copy-Item "hyzenkernel-early\build\libs\hyzenkernel-early.jar" "$BundleDir\earlyplugins\hyzenkernel-early-${Version}.jar"
-    Write-Host "       -> earlyplugins/hyzenkernel-early-${Version}.jar"
+    Copy-Item $EarlyJar.FullName "$BundleDir\earlyplugins\hyzer-early-${Version}.jar"
+    Write-Host "       -> earlyplugins/hyzer-early-${Version}.jar (Source: $($EarlyJar.Name))"
+} elseif (Test-Path "hyzer-early\build\libs\hyzer-early.jar") {
+    Copy-Item "hyzer-early\build\libs\hyzer-early.jar" "$BundleDir\earlyplugins\hyzer-early-${Version}.jar"
+    Write-Host "       -> earlyplugins/hyzer-early-${Version}.jar"
 } else {
      Write-Warning "Early plugin jar not found."
 }

@@ -1,0 +1,11 @@
+# Build outputs
+build/
+.gradle/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+#lib jars
+libs/

@@ -1,6 +1,6 @@
-rootProject.name = "hyzenkernel"
+rootProject.name = "hyzer"
 
-include("hyzenkernel-early")
+include("hyzer-early")
 
 pluginManagement {
     repositories {

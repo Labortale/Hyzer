@@ -1,0 +1,19 @@
+{
+  "Group": "com.hyzer",
+  "Name": "Hyzer-Early",
+  "Version": "unspecified",
+  "Description": "Bytecode transformers for Hyzer - Fixes deep networking bugs and combat desync issues.",
+  "Main": "com.hyzer.early.HyzerEarly",
+  "Authors": [
+    {
+      "Name": "HyzenNet",
+      "Url": "https://github.com/HyzenNet"
+    }
+  ],
+  "Website": "https://github.com/Labortale/Hyzer",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false
+}

@@ -4,7 +4,7 @@ setlocal
 set "ROOT=%~dp0"
 cd /d "%ROOT%"
 
-call gradlew.bat shadowJar :hyzenkernel-early:jar
+call gradlew.bat shadowJar :hyzer-early:jar
 if errorlevel 1 exit /b 1
 
 set "OUTPUT_DIR=%ROOT%output"
@@ -17,9 +17,9 @@ if not defined runtimeJar (
 )
 copy /y "%runtimeJar%" "%OUTPUT_DIR%" >nul
 
-call :pickNewest "hyzenkernel-early\build\libs" earlyJar
+call :pickNewest "hyzer-early\build\libs" earlyJar
 if not defined earlyJar (
-  echo No se encontro el JAR del earlyplugin en hyzenkernel-early\build\libs
+  echo No se encontro el JAR del earlyplugin en hyzer-early\build\libs
   exit /b 1
 )
 copy /y "%earlyJar%" "%OUTPUT_DIR%" >nul

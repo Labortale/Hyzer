@@ -1,10 +1,10 @@
-# HyzenKernel (Hytale Early Access)
+# Hyzer (Hytale Early Access)
 
-HyzenKernel is a set of essential fixes for Hytale Early Access servers. It was originally created to stabilize our server **Hyzen.net**, and we decided to share it with the community. It is an improved fork of **HyFixes**.
+Hyzer is a fork of Hyzenkernel, a set of essential fixes for Hytale Early Access servers. It was originally created to stabilize the server **Hyzen.net**, and we decided to share it with the community. It is an improved fork of **HyFixes**.
 
 ## Two plugins, one goal
-- **Runtime plugin** (`hyzenkernel.jar`): runtime fixes using sanitizers and hooks.
-- **Early plugin** (`hyzenkernel-early.jar`): deep fixes via ASM bytecode transforms at class load.
+- **Runtime plugin** (`hyzer.jar`): runtime fixes using sanitizers and hooks.
+- **Early plugin** (`hyzer-early.jar`): deep fixes via ASM bytecode transforms at class load.
 
 ## Key improvements (summary)
 - Prevents world thread crashes from spawns, world map issues, and invalid refs.
@@ -13,15 +13,16 @@ HyzenKernel is a set of essential fixes for Hytale Early Access servers. It was 
 - Reduces shutdown errors and task submissions to dead worlds.
 
 ## Quick install
-1) Runtime (required): place `hyzenkernel-X.X.X.jar` in `mods/`
-2) Early (recommended): place `hyzenkernel-early-X.X.X.jar` in `earlyplugins/` and enable early plugins
+1) Runtime (required): place `hyzer-X.X.X.jar` in `mods/`
+2) Early (recommended): place `hyzer-early-X.X.X.jar` in `earlyplugins/` and enable early plugins
 
 ## Configuration
-Generated at `mods/hyzenkernel/config.json` with toggles for fixes and logging.
+Generated at `mods/hyzer/config.json` with toggles for fixes and logging.
 
 ## Notes
 - Recommended for servers with instances, portals, and custom content.
 - Compatible with vanilla Hytale Early Access servers.
 
 ## Credits / Info
-Repository: `https://github.com/DuvyDev/HyzenKernel`
+Project originally on: `https://github.com/DuvyDev/Hyzenkernel`
+Repository: `https://github.com/Labortale/Hyzer`
